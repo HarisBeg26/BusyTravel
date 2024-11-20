@@ -3,6 +3,7 @@ import Home from '@/views/Home.vue'; // The home page
 import TripsList from '@/views/TripsList.vue';
 import ExpensesList from '@/views/ExpensesList.vue';
 import Statistics from '@/views/Statistics.vue';
+import AddTrip from "@/views/AddTrip.vue";
 
 const routes = [
     {
@@ -14,6 +15,11 @@ const routes = [
         path: '/trips',
         name: 'TripsList',
         component: TripsList,
+    },
+    {
+        path:'/add-trip',
+        name: 'AddTrip',
+        component:AddTrip,
     },
     {
         path: '/expenses',
