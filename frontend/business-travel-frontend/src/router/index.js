@@ -1,17 +1,35 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '@/views/Home.vue'; // The home page
+import TripsList from '@/views/TripsList.vue';
+import ExpensesList from '@/views/ExpensesList.vue';
+import Statistics from '@/views/Statistics.vue';
 
 const routes = [
-    {path: '/', name:"Home", component: () => import("../views/Home.vue")},
-    {path:'/trips', name:"Trips", component: () => import("../views/TripsList.vue")},
-    {path:'/trips/add', name:"AddTrip", component: () => import("../views/AddEditTrip.vue")},
-    { path: "/expenses/:tripId", name: "Expenses", component: () => import("../views/ExpensesList.vue") },
-    { path: "/expenses/:tripId/add", name: "AddExpense", component: () => import("../views/AddEditExpense.vue") },
-    { path: "/statistics", name: "Statistics", component: () => import("../views/Statistics.vue") },
+    {
+        path: '/',
+        name: 'Home',
+        component: Home,  // HomePage.vue will be displayed at the root
+    },
+    {
+        path: '/trips',
+        name: 'TripsList',
+        component: TripsList,
+    },
+    {
+        path: '/expenses',
+        name: 'ExpensesList',
+        component: ExpensesList,
+    },
+    {
+        path: '/statistics',
+        name: 'Statistics',
+        component: Statistics,
+    }
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes
 });
 
 export default router;
