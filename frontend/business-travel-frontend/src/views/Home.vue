@@ -22,7 +22,7 @@
     </div>
 
     <div class="panel" @click="goToChart">
-      <img src="@/assets/ExpensesChart.png" alt="ExpensesChart" />
+      <img src="@/assets/chart.png" alt="ExpensesChart" />
       <h2>GRAFI STROŠKOV</h2>
       <p>Pregled stroškov na grafih</p>
       <button class="nav-btn">Go to Chart</button>
