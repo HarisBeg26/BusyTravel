@@ -1,0 +1,13 @@
+# Node.js (frontend)
+node_modules/
+dist/
+
+# Python (backend)
+__pycache__/
+env/
+venv/
+
+# General
+*.log
+.DS_Store
+*.env
