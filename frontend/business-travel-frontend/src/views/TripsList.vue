@@ -14,9 +14,15 @@
 
         <!-- List of Trips -->
         <ul>
-          <li v-for="trip in trips" :key="trip.id" @click="selectTrip(trip)">
+          <li
+              v-for="trip in trips"
+              :key="trip.id"
+              @click="selectTrip(trip)"
+              :class="{ selected: selectedTrip.id === trip.id }"
+          >
             {{ trip.destination }}
           </li>
+
         </ul>
       </div>
 
@@ -69,22 +75,31 @@ export default {
   methods: {
     async fetchTrips() {
       try {
-        const response = await axios.get('https://your-api-endpoint.com/trips');
-        this.trips = response.data; // Populate trips data from API response
+        const response = await axios.get('http://localhost:3000/api/trips');
+        console.log("Fetched trips:", response.data);
+        this.trips = response.data.map(trip => ({
+          ...trip,
+          startDate: trip.startDate ? trip.startDate.split('T')[0]:'',
+          endDate: trip.endDate ? trip.endDate.split('T')[0]:'',
+        })); // Populate trips data from API response
       } catch (error) {
         console.error("Error fetching trips:", error);
       }
     },
+
     selectTrip(trip) {
-      this.selectedTrip = { ...trip }; // Populate selected trip's details
+      this.selectedTrip = { ...trip };
+      console.log("Selected trip:", this.selectedTrip);
     },
+
     redirectToAddTravel() {
       this.$router.push('/add-trip'); // Redirect to the Add Trip page
     },
-    deleteTravel() {
+
+    async deleteTravel() {
       if (this.selectedTrip.id) {
         // Call API to delete the selected trip
-        axios.delete(`https://your-api-endpoint.com/trips/${this.selectedTrip.id}`)
+        await axios.delete(`http://localhost:3000/api/trips/${this.selectedTrip.id}`)
             .then(() => {
               // Remove the deleted trip from the local trips list
               this.trips = this.trips.filter(trip => trip.id !== this.selectedTrip.id);
@@ -95,22 +110,31 @@ export default {
             });
       }
     },
-    editTravel() {
+
+    async editTravel() {
       if (this.selectedTrip.id) {
-        // Call API to update the trip
-        axios.put(`https://your-api-endpoint.com/trips/${this.selectedTrip.id}`, this.selectedTrip)
-            .then(response => {
-              // Optionally update the trip list with the updated data
-              const updatedTripIndex = this.trips.findIndex(trip => trip.id === this.selectedTrip.id);
-              if (updatedTripIndex !== -1) {
-                this.trips[updatedTripIndex] = response.data;
-              }
-            })
-            .catch(error => {
-              console.error("Error editing trip:", error);
-            });
+        try {
+          const updatedTrip = {
+            ...this.selectedTrip,
+            start_date: this.selectedTrip.startDate || null,
+            end_date: this.selectedTrip.endDate || null,
+          };
+          const response = await axios.put(
+              `http://localhost:3000/api/trips/${this.selectedTrip.id}`,
+              updatedTrip
+          );
+          console.log("Response:", response.data);
+
+          // Update the trips list locally
+          const updatedTripIndex = this.trips.findIndex(trip => trip.id === this.selectedTrip.id);
+          if (updatedTripIndex !== -1) {
+            this.trips.splice(updatedTripIndex, 1, response.data);
+          }
+        } catch (error) {
+          console.error("Error editing trip:", error);
+        }
       }
-    },
+    }
   },
 };
 </script>
@@ -135,6 +159,12 @@ export default {
   margin: 20px;
 }
 
+.selected {
+  background-color: #800000;
+  color: white;
+}
+
+
 .sidebar {
   width: 200px;
   background-color: #f5f5f5;
@@ -157,6 +187,12 @@ export default {
 .sidebar li {
   cursor: pointer;
   padding: 5px 0;
+  color:#333;
+}
+
+.sidebar li:hover {
+  background-color: #ddd;
+  color:#000;
 }
 
 .detail-panel {
@@ -194,4 +230,5 @@ export default {
   border: none;
   cursor: pointer;
 }
+
 </style>

@@ -1,16 +1,16 @@
 <template>
   <div class="add-expense">
     <header class="header">
-      <h1>Stroški</h1>
+      <h1>Dodaj strošek</h1>
     </header>
     <main class="form-container">
       <form @submit.prevent="submitExpense">
         <div class="form-group">
-          <label for="description">Naziv stroška</label>
+          <label for="description">Opis</label>
           <input
               type="text"
               id="description"
-              v-model="description"
+              v-model="expense.description"
               required
           />
         </div>
@@ -19,7 +19,7 @@
           <input
               type="number"
               id="amount"
-              v-model="amount"
+              v-model="expense.amount"
               step="0.01"
               required
           />
@@ -29,53 +29,61 @@
           <input
               type="text"
               id="category"
-              v-model="category"
+              v-model="expense.category"
               required
           />
         </div>
         <div class="form-group">
-          <label for="trip">Poslovno potovanje</label>
-          <select id="trip" v-model="selectedTrip">
+          <label for="tripId">Poslovno potovanje</label>
+          <select v-model="expense.trip_id" id="tripId">
             <option v-for="trip in trips" :key="trip.id" :value="trip.id">
               {{ trip.destination }}
             </option>
           </select>
         </div>
-        <button type="submit" class="submit-button">Dodaj strošek</button>
+        <button type="submit" class="submit-button">Shrani</button>
       </form>
     </main>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      description: "",
-      amount: "",
-      category: "",
-      selectedTrip: null,
-      trips: [
-        { id: 1, destination: "London" },
-        { id: 2, destination: "Paris" },
-      ],
+      expense: {
+        description: '',
+        amount: '',
+        category: '',
+        trip_id: null,
+      },
+      trips: [], // Store trips here
     };
   },
+  mounted() {
+    this.fetchTrips(); // Fetch trips when component is mounted
+  },
   methods: {
-    submitExpense() {
-      // Emit or save the expense data
-      const newExpense = {
-        description: this.description,
-        amount: parseFloat(this.amount),
-        category: this.category,
-        tripId: this.selectedTrip,
-      };
-      console.log("Expense submitted: ", newExpense);
-      // Reset the form
-      this.description = "";
-      this.amount = "";
-      this.category = "";
-      this.selectedTrip = null;
+    async fetchTrips() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/trips');
+        console.log("Fetched trips:", response.data);
+        this.trips = response.data; // Populate trips array with data from API
+      } catch (error) {
+        console.error("Error fetching trips:", error);
+      }
+    },
+
+    async submitExpense() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/expenses', this.expense);
+        console.log('Expense added:', response.data);
+        this.$router.push('/expenses'); // Redirect to expenses list after adding
+      } catch (error) {
+        console.error('Error adding expense:', error);
+      }
     },
   },
 };
@@ -83,13 +91,13 @@ export default {
 
 <style scoped>
 .add-expense {
-  background: #333333;
-  color: #ffffff;
+  background: #f0f8ff; /* Light Blue */
+  color: #333;
   min-height: 100vh;
 }
 
 .header {
-  background: #4a90e2;
+  background: #4682b4; /* Steel Blue */
   padding: 1rem;
   text-align: left;
 }
@@ -101,7 +109,7 @@ export default {
 }
 
 .form-container {
-  background: #eeeeee;
+  background: #ffffff;
   margin: 20px;
   padding: 20px;
   border-radius: 8px;
@@ -126,15 +134,20 @@ export default {
 }
 
 .submit-button {
-  background: #4a90e2;
+  background: #4682b4; /* Steel Blue */
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   font-size: 1rem;
+  margin-top: 10px;
 }
 
 .submit-button:hover {
-  background: #357ab8;
+  background: #5f9ea0; /* Light Steel Blue */
+}
+
+.submit-button:active {
+  background: #3b7fa5; /* Darker Steel Blue */
 }
 </style>

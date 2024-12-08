@@ -6,12 +6,17 @@
     "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["express", "supabase", "nodejs"],
+  "keywords": [
+    "express",
+    "supabase",
+    "nodejs"
+  ],
   "author": "Your Name",
   "license": "ISC",
   "description": "Backend for Business Travel Tracker App",
   "dependencies": {
     "@supabase/supabase-js": "^2.47.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
   }

@@ -4,23 +4,28 @@ const Trip = require('../models/tripModel');
 
 const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_KEY);
 
-exports.createTrip = async (data) => {
-    try {
-        const { destination, start_date, end_date, purpose } = data;
-        const { data: trip, error } = await supabase
-            .from('trips')
-            .insert([{ destination, start_date, end_date, purpose }])
-            .single();
+exports.createTrip = async (tripData) => {
+    console.log("Trip data received in service:", tripData);
 
-        if (error) throw error;
+    // Map camelCase to snake_case
+    const dbTrip = {
+        destination: tripData.destination,
+        start_date: tripData.startDate,
+        end_date: tripData.endDate,
+        purpose: tripData.purpose,
+    };
 
-        return trip;
-    } catch (err) {
-        console.error('Error in createTrip service:', err.message);
-        throw err;
+    // Insert into Supabase
+    const { data, error } = await supabase
+        .from('trips')
+        .insert([dbTrip]);
+
+    if (error) {
+        console.error("Supabase error:", error);
+        throw new Error(error.message);
     }
+    return data;
 };
-
 
 
 exports.getTrips = async () => {
@@ -37,13 +42,11 @@ exports.getTrips = async () => {
     console.log("Raw trip data from Supabase:", data);
 
     // Map raw data to the Trip model
-    return data.map(trip => new Trip(
-        trip.id,
-        trip.destination,
-        trip.start_date,
-        trip.end_date,
-        trip.purpose // Ensure this matches your database column
-    ));
+    return data.map(trip => ({
+        ...trip,
+        startDate: trip.start_date || null, // Convert field name
+        endDate: trip.end_date || null,     // Convert field name
+    }));
 };
 
 
@@ -70,27 +73,17 @@ exports.getTripById = async (id) => {
 
 
 exports.updateTrip = async (id, data) => {
-    const { destination, start_date, end_date, purpose } = data;
-
-    // Prepare the updated trip object
-    const updatedTrip = {
-        destination,
-        start_date: new Date(start_date).toISOString(), // Ensure the correct date format
-        end_date: new Date(end_date).toISOString(), // Same as above
-        purpose,
-    };
-
-    const { error, data: trip } = await supabase
+    const { start_date, end_date, destination, purpose } = data;
+    const { error, data: updatedTrip } = await supabase
         .from('trips')
-        .update(updatedTrip)
+        .update({ start_date, end_date, destination, purpose })
         .eq('id', id)
         .single();
 
     if (error) throw error;
-
-    // Return the updated trip as a plain object
-    return trip;
+    return updatedTrip;
 };
+
 
 exports.deleteTrip = async (id) => {
     const { error } = await supabase.from('trips').delete().eq('id', id);

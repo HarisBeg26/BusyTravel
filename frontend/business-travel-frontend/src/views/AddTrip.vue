@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -58,23 +60,34 @@ export default {
     };
   },
   methods: {
-    submitTrip() {
-      // Emit form data to parent or save it via API
+    async submitTrip() {
+      console.log("Destination:", this.destination);
+      console.log("Start Date:", this.startDate);
+      console.log("End Date:", this.endDate);
+      console.log("Purpose:", this.purpose);
+
       const newTrip = {
         destination: this.destination,
         startDate: this.startDate,
         endDate: this.endDate,
         purpose: this.purpose,
       };
-      console.log("Trip submitted: ", newTrip);
-      // Reset the form
-      this.destination = "";
-      this.startDate = "";
-      this.endDate = "";
-      this.purpose = "";
+      console.log("Trip submitted to backend:", newTrip);
+      try {
+        const response = await axios.post("http://localhost:3000/api/trips", newTrip);
+        console.log("Backend Response:", response.data);
+
+        // Reset form
+        this.destination = "";
+        this.startDate = "";
+        this.endDate = "";
+        this.purpose = "";
+      } catch (error) {
+        console.error("Error adding trip:", error.response?.data || error.message);
+      }
     },
-  },
-};
+  }
+}
 </script>
 
 <style scoped>
@@ -128,6 +141,14 @@ export default {
   cursor: pointer;
   font-size: 1rem;
 }
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  color: black; /* This will change the label color to black */
+}
+
 
 .submit-button:hover {
   background: #a00000;

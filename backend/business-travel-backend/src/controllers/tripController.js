@@ -2,13 +2,16 @@ const tripService = require('../services/tripService');
 
 exports.createTrip = async (req, res) => {
     try {
+        console.log("Incoming request body:", req.body);
+
         const trip = await tripService.createTrip(req.body);
         res.status(201).json(trip);
     } catch (error) {
-        console.error('Error in createTrip controller:', error.message);
+        console.error("Error in createTrip controller:", error.message);
         res.status(500).json({ error: error.message });
     }
 };
+
 
 exports.getTrips = async (req, res) => {
     try {

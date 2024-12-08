@@ -4,6 +4,7 @@ import TripsList from '@/views/TripsList.vue';
 import ExpensesList from '@/views/ExpensesList.vue';
 import Statistics from '@/views/Statistics.vue';
 import AddTrip from "@/views/AddTrip.vue";
+import AddExpense from "@/views/AddExpense.vue";  // Import AddExpense.vue
 
 const routes = [
     {
@@ -25,6 +26,11 @@ const routes = [
         path: '/expenses',
         name: 'ExpensesList',
         component: ExpensesList,
+    },
+    {
+        path: '/add-expense',  // Define the route for Add Expense page
+        name: 'AddExpense',
+        component: AddExpense, // Associate the route with the AddExpense component
     },
     {
         path: '/statistics',
