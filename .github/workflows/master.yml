@@ -20,10 +20,10 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies for frontend
+      - name: Install dependencies for frontend with legacy-peer-deps
         run: |
           cd frontend/business-travel-frontend  # Correct path to frontend
-          npm install
+          npm install --legacy-peer-deps  # Add this flag
 
       - name: Run frontend unit tests with coverage
         run: |
