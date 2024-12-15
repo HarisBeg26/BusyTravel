@@ -1,0 +1,66 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js for frontend
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend/business-travel-frontend
+        npm install
+
+    - name: Run frontend tests
+      run: |
+        cd frontend/business-travel-frontend
+        npm run test:unit
+
+    - name: Upload coverage reports (optional)
+      uses: actions/upload-artifact@v2
+      with:
+        name: frontend-coverage
+        path: frontend/business-travel-frontend/coverage
+
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js for backend
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install backend dependencies
+      run: |
+        cd backend/business-travel-backend
+        npm install
+
+    - name: Run backend tests
+      run: |
+        cd backend/business-travel-backend
+        npm test
+
+    - name: Upload coverage reports (optional)
+      uses: actions/upload-artifact@v2
+      with:
+        name: backend-coverage
+        path: backend/business-travel-backend/coverage
