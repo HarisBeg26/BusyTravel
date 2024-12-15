@@ -1,4 +1,4 @@
-name: CI/CD Workflow
+name: CI Workflow
 
 on:
   push:
@@ -11,57 +11,55 @@ on:
 jobs:
   frontend:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js for frontend
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      - name: Set up Node.js for frontend
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install frontend dependencies
-      run: |
-         cd frontend/business-travel-frontend
-         npm install --legacy-peer-deps
+      - name: Install dependencies for frontend with legacy-peer-deps
+        run: |
+          cd frontend/business-travel-frontend  # Correct path to frontend
+          npm install --legacy-peer-deps  # Add this flag
 
-    - name: Run frontend tests
-      run: |
-        cd frontend/business-travel-frontend
-        npm run test:unit
+      - name: Run frontend unit tests with coverage
+        run: |
+          cd frontend/business-travel-frontend  # Correct path to frontend
+          npm run test:coverage
 
-    - name: Upload coverage reports (optional)
-      uses: actions/upload-artifact@v3
-      with:
-        name: frontend-coverage
-        path: frontend/business-travel-frontend/coverage
-
+      - name: Upload frontend test coverage reports as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-coverage
+          path: frontend/business-travel-frontend/coverage  # Correct path to coverage folder
 
   backend:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js for backend
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      - name: Set up Node.js for backend
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    - name: Install backend dependencies
-      run: |
-        cd backend/business-travel-backend
-        npm install
+      - name: Install dependencies for backend
+        run: |
+          cd backend/business-travel-backend  # Correct path to backend
+          npm install
 
-    - name: Run backend tests
-      run: |
-        cd backend/business-travel-backend
-        npm test
+      - name: Run backend unit tests with coverage
+        run: |
+          cd backend/business-travel-backend  # Correct path to backend
+          npm run test:coverage
 
-    - name: Upload coverage reports (optional)
-      uses: actions/upload-artifact@v3
-      with:
-        name: backend-coverage
-        path: backend/business-travel-backend/coverage
+      - name: Upload backend test coverage reports as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-coverage
+          path: backend/business-travel-backend/coverage  
+

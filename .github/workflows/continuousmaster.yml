@@ -9,43 +9,48 @@ on:
       - master
 
 jobs:
-  frontend:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js for frontend
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Or your preferred version
 
-    - name: Install frontend dependencies
-      run: |
-        cd frontend/business-travel-frontend
-        npm install
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          cd frontend/business-travel-frontend
+          npm install
 
-    - name: Run frontend tests
-      run: |
-        cd frontend/business-travel-frontend
-        npm run test:unit
+      # Step 4: Run tests and generate coverage report
+      - name: Run tests with Vitest
+        run: |
+          cd frontend/business-travel-frontend
+          npm run test:coverage  # This runs vitest with coverage
 
-    - name: Upload coverage reports (optional)
-      uses: actions/upload-artifact@v2
-      with:
-        name: frontend-coverage
-        path: frontend/business-travel-frontend/coverage
+      # Step 5: Upload coverage report as artifact
+      - name: Upload coverage report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: frontend/business-travel-frontend/coverage/
+
 
   backend:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Node.js for backend
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '16'
 
@@ -60,7 +65,7 @@ jobs:
         npm test
 
     - name: Upload coverage reports (optional)
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: backend-coverage
         path: backend/business-travel-backend/coverage
