@@ -43,6 +43,7 @@
         </div>
         <button type="submit" class="submit-button">Shrani</button>
       </form>
+      <div v-if="error" class="error">{{ error }}</div>
     </main>
   </div>
 </template>
@@ -60,6 +61,7 @@ export default {
         trip_id: null,
       },
       trips: [], // Store trips here
+      error: null, // Store error messages
     };
   },
   mounted() {
@@ -69,13 +71,11 @@ export default {
     async fetchTrips() {
       try {
         const response = await axios.get('http://localhost:3000/api/trips');
-        console.log("Fetched trips:", response.data);
-        this.trips = response.data; // Populate trips array with data from API
+        this.trips = response.data;
       } catch (error) {
-        console.error("Error fetching trips:", error);
+        this.error = error.message;
       }
     },
-
     async submitExpense() {
       try {
         const response = await axios.post('http://localhost:3000/api/expenses', this.expense);
@@ -149,5 +149,10 @@ export default {
 
 .submit-button:active {
   background: #3b7fa5; /* Darker Steel Blue */
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
 }
 </style>
