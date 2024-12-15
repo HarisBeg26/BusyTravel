@@ -15,26 +15,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
+      - name: Set up Node.js for frontend
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
       - name: Install dependencies for frontend
         run: |
-          cd frontend/business-travel-frontend
+          cd frontend/business-travel-frontend  # Correct path to frontend
           npm install
 
       - name: Run frontend unit tests with coverage
         run: |
-          cd frontend/business-travel-frontend
+          cd frontend/business-travel-frontend  # Correct path to frontend
           npm run test:coverage
 
       - name: Upload frontend test coverage reports as artifact
         uses: actions/upload-artifact@v3
         with:
           name: frontend-coverage
-          path: frontend/business-travel-frontend/coverage  # Adjust this path if necessary
+          path: frontend/business-travel-frontend/coverage  # Correct path to coverage folder
 
   backend:
     runs-on: ubuntu-latest
@@ -49,16 +49,17 @@ jobs:
 
       - name: Install dependencies for backend
         run: |
-          cd backend/business-travel-backend
+          cd backend/business-travel-backend  # Correct path to backend
           npm install
 
       - name: Run backend unit tests with coverage
         run: |
-          cd backend/business-travel-backend
+          cd backend/business-travel-backend  # Correct path to backend
           npm run test:coverage
 
       - name: Upload backend test coverage reports as artifact
         uses: actions/upload-artifact@v3
         with:
           name: backend-coverage
-          path: backend/business-travel-backend/coverage  # Adjust this path if necessary
+          path: backend/business-travel-backend/coverage  
+
