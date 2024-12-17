@@ -1,12 +1,12 @@
 <template>
   <div class="add-trip">
     <header class="header">
-      <h1>Potovanja</h1>
+      <h1>{{ $t('tripsHeader') }}</h1>
     </header>
     <main class="form-container">
       <form @submit.prevent="submitTrip">
         <div class="form-group">
-          <label for="destination">Destinacija</label>
+          <label for="destination">{{ $t('destination') }}</label>
           <input
               type="text"
               id="destination"
@@ -15,7 +15,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="start-date">Datum začetka</label>
+          <label for="start-date">{{ $t('startDate') }}</label>
           <input
               type="date"
               id="start-date"
@@ -24,7 +24,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="end-date">Datum konca</label>
+          <label for="end-date">{{ $t('endDate') }}</label>
           <input
               type="date"
               id="end-date"
@@ -33,7 +33,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="purpose">Namen potovanja</label>
+          <label for="purpose">{{ $t('tripName') }}</label>
           <input
               type="text"
               id="purpose"
@@ -41,7 +41,7 @@
               required
           />
         </div>
-        <button type="submit" class="submit-button">Dodaj potovanje</button>
+        <button type="submit" class="submit-button">{{ $t('addTrip') }}</button>
       </form>
     </main>
   </div>
@@ -61,23 +61,17 @@ export default {
   },
   methods: {
     async submitTrip() {
-      console.log("Destination:", this.destination);
-      console.log("Start Date:", this.startDate);
-      console.log("End Date:", this.endDate);
-      console.log("Purpose:", this.purpose);
-
       const newTrip = {
         destination: this.destination,
         startDate: this.startDate,
         endDate: this.endDate,
         purpose: this.purpose,
       };
-      console.log("Trip submitted to backend:", newTrip);
       try {
         const response = await axios.post("http://localhost:3000/api/trips", newTrip);
         console.log("Backend Response:", response.data);
 
-        // Reset form
+        // Reset form after successful submission
         this.destination = "";
         this.startDate = "";
         this.endDate = "";
@@ -141,14 +135,6 @@ export default {
   cursor: pointer;
   font-size: 1rem;
 }
-
-.form-group label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-  color: black; /* This will change the label color to black */
-}
-
 
 .submit-button:hover {
   background: #a00000;

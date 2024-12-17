@@ -2,15 +2,15 @@
   <div class="trip-list-window">
     <!-- Header Section -->
     <div class="header">
-      <span>Potovanja</span>
+      <span>{{ $t('tripsHeader') }}</span>
     </div>
 
     <!-- Main Content Section -->
     <div class="main-content">
       <!-- Sidebar Section -->
       <div class="sidebar">
-        <button @click="redirectToAddTravel" class="btn-add">Novo potovanje</button>
-        <button @click="deleteTravel" class="btn-delete">Izbriši potovanje</button>
+        <button @click="redirectToAddTravel" class="btn-add">{{ $t('newTrip') }}</button>
+        <button @click="deleteTravel" class="btn-delete">{{ $t('deleteTrip') }}</button>
 
         <!-- List of Trips -->
         <ul>
@@ -22,31 +22,30 @@
           >
             {{ trip.destination }}
           </li>
-
         </ul>
       </div>
 
       <!-- Detail Panel Section -->
-      <div class="detail-panel">
-        <h2>Podrobnosti potovanja</h2>
+      <div class="detail-panel" v-if="selectedTrip.id">
+        <h2>{{ $t('tripDetails') }}</h2>
         <div class="details">
           <div>
-            <label for="purpose">Ime potovanja:</label>
+            <label for="purpose">{{ $t('tripName') }}</label>
             <input v-model="selectedTrip.purpose" id="purpose" type="text" />
           </div>
           <div>
-            <label for="startDate">Datum začetka:</label>
+            <label for="startDate">{{ $t('startDate') }}</label>
             <input v-model="selectedTrip.startDate" id="startDate" type="date" />
           </div>
           <div>
-            <label for="destination">Destinacija:</label>
+            <label for="destination">{{ $t('destination') }}</label>
             <input v-model="selectedTrip.destination" id="destination" type="text" />
           </div>
           <div>
-            <label for="endDate">Datum konca:</label>
+            <label for="endDate">{{ $t('endDate') }}</label>
             <input v-model="selectedTrip.endDate" id="endDate" type="date" />
           </div>
-          <button @click="editTravel" class="btn-edit">Uredi</button>
+          <button @click="editTravel" class="btn-edit">{{ $t('editTrip') }}</button>
         </div>
       </div>
     </div>
@@ -60,11 +59,12 @@ export default {
   data() {
     return {
       trips: [], // Initially empty, will be populated from API
-      selectedTrip: {
+      selectedTrip: { // Ensure this object is defined with default values
+        id: null,
         purpose: '',
         destination: '',
         startDate: '',
-        endDate: '',
+        endDate: ''
       },
     };
   },
@@ -76,20 +76,14 @@ export default {
     async fetchTrips() {
       try {
         const response = await axios.get('http://localhost:3000/api/trips');
-        console.log("Fetched trips:", response.data);
-        this.trips = response.data.map(trip => ({
-          ...trip,
-          startDate: trip.startDate ? trip.startDate.split('T')[0]:'',
-          endDate: trip.endDate ? trip.endDate.split('T')[0]:'',
-        })); // Populate trips data from API response
+        this.trips = response.data; // Populate trips data from API response
       } catch (error) {
         console.error("Error fetching trips:", error);
       }
     },
 
     selectTrip(trip) {
-      this.selectedTrip = { ...trip };
-      console.log("Selected trip:", this.selectedTrip);
+      this.selectedTrip = { ...trip };  // Make sure the trip object is copied to selectedTrip
     },
 
     redirectToAddTravel() {
@@ -103,7 +97,7 @@ export default {
             .then(() => {
               // Remove the deleted trip from the local trips list
               this.trips = this.trips.filter(trip => trip.id !== this.selectedTrip.id);
-              this.selectedTrip = { purpose: '', destination: '', startDate: '', endDate: '' }; // Reset selected trip
+              this.selectedTrip = { id: null, purpose: '', destination: '', startDate: '', endDate: '' }; // Reset selected trip
             })
             .catch(error => {
               console.error("Error deleting trip:", error);
@@ -163,7 +157,6 @@ export default {
   background-color: #800000;
   color: white;
 }
-
 
 .sidebar {
   width: 200px;
@@ -230,5 +223,4 @@ export default {
   border: none;
   cursor: pointer;
 }
-
 </style>

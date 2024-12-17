@@ -2,30 +2,30 @@
   <div>
     <!-- Header Section -->
     <div class="header">
-      <h1>Dobrodošel Janez Novak</h1>
+      <h1>{{ $t('welcomeMessage') }}</h1>
     </div>
 
     <!-- Content Section with Navigation Panels -->
     <div class="content">
       <div class="panel" @click="goToTravels">
         <img src="/src/assets/Corporate_Travel_Policy_1200x600.png" alt="Travels" />
-        <h3>POTOVANJA</h3>
-        <p>Dodajanje in urejanje potovanj</p>
-        <button>Go to Travels</button>
+        <h3>{{ $t('travels') }}</h3>
+        <p>{{ $t('travelsDescription') }}</p>
+        <button>{{ $t('goToTravels') }}</button>
       </div>
 
       <div class="panel" @click="goToExpenses">
         <img src="/src/assets/expense.png" alt="Expenses" />
-        <h3>STROŠKI</h3>
-        <p>Dodajanje in urejanje stroškov</p>
-        <button>Go to Expenses</button>
+        <h3>{{ $t('expenses') }}</h3>
+        <p>{{ $t('expensesDescription') }}</p>
+        <button>{{ $t('goToExpenses') }}</button>
       </div>
 
       <div class="panel" @click="goToChart">
         <img src="/src/assets/chart.png" alt="Chart" />
-        <h3>GRAFI STROŠKOV</h3>
-        <p>Pregled stroškov na grafih</p>
-        <button>Go to Chart</button>
+        <h3>{{ $t('charts') }}</h3>
+        <p>{{ $t('chartsDescription') }}</p>
+        <button>{{ $t('goToCharts') }}</button>
       </div>
     </div>
   </div>

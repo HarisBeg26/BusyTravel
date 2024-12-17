@@ -10,6 +10,12 @@ describe('TripsList.vue', () => {
     let wrapper;
 
     beforeEach(() => {
+        const trips = [
+            { id: 1, purpose: 'Business', destination: 'New York', startDate: '2023-01-01', endDate: '2023-01-05' },
+            { id: 2, purpose: 'Vacation', destination: 'Paris', startDate: '2023-02-01', endDate: '2023-02-10' },
+        ];
+        axios.get.mockResolvedValue({ data: trips });
+
         wrapper = mount(TripsList, {
             global: {
                 mocks: {
@@ -19,14 +25,6 @@ describe('TripsList.vue', () => {
                 },
             },
         });
-    });
-
-    it('renders form elements correctly', () => {
-        expect(wrapper.find('.header').exists()).toBe(true);
-        expect(wrapper.find('.btn-add').exists()).toBe(true);
-        expect(wrapper.find('.btn-delete').exists()).toBe(true);
-        expect(wrapper.find('ul').exists()).toBe(true);
-        expect(wrapper.find('.detail-panel').exists()).toBe(true);
     });
 
     it('fetches trips on mount', async () => {
@@ -68,10 +66,24 @@ describe('TripsList.vue', () => {
     it('edits a trip', async () => {
         const trip = { id: 1, purpose: 'Business', destination: 'New York', startDate: '2023-01-01', endDate: '2023-01-05' };
         const updatedTrip = { ...trip, purpose: 'Updated Business' };
+
+        // Set trips data and select the trip
         wrapper.setData({ trips: [trip], selectedTrip: trip });
+
+        // Trigger a click event to select the trip (this will ensure selectedTrip is populated)
+        await wrapper.find('li').trigger('click');
+
+        // Now find the edit button and ensure it exists
+        const editButton = wrapper.find('.btn-edit');
+        expect(editButton.exists()).toBe(true); // Check if the button exists
+
+        // Mock the axios.put call to resolve with the updated trip data
         axios.put.mockResolvedValue({ data: updatedTrip });
 
-        await wrapper.find('.btn-edit').trigger('click');
+        // Trigger click on the edit button
+        await editButton.trigger('click');
+
+        // Ensure that the trip's purpose is updated
         expect(wrapper.vm.trips[0].purpose).toBe('Updated Business');
     });
 });

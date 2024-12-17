@@ -1,12 +1,12 @@
 <template>
   <div class="add-expense">
     <header class="header">
-      <h1>Dodaj strošek</h1>
+      <h1>{{ $t('addExpense') }}</h1>
     </header>
     <main class="form-container">
       <form @submit.prevent="submitExpense">
         <div class="form-group">
-          <label for="description">Opis</label>
+          <label for="description">{{ $t('expenseDescription') }}</label>
           <input
               type="text"
               id="description"
@@ -15,7 +15,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="amount">Znesek</label>
+          <label for="amount">{{ $t('amount') }}</label>
           <input
               type="number"
               id="amount"
@@ -25,7 +25,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="category">Kategorija</label>
+          <label for="category">{{ $t('category') }}</label>
           <input
               type="text"
               id="category"
@@ -34,14 +34,14 @@
           />
         </div>
         <div class="form-group">
-          <label for="tripId">Poslovno potovanje</label>
+          <label for="tripId">{{ $t('businessTrip') }}</label>
           <select v-model="expense.trip_id" id="tripId">
             <option v-for="trip in trips" :key="trip.id" :value="trip.id">
               {{ trip.destination }}
             </option>
           </select>
         </div>
-        <button type="submit" class="submit-button">Shrani</button>
+        <button type="submit" class="submit-button">{{ $t('save') }}</button>
       </form>
       <div v-if="error" class="error">{{ error }}</div>
     </main>

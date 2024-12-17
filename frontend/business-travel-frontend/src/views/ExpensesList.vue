@@ -2,15 +2,15 @@
   <div class="expense-list-window">
     <!-- Header Section -->
     <div class="header">
-      <span>Stroški</span>
+      <span>{{ $t('expenses') }}</span>
     </div>
 
     <!-- Main Content Section -->
     <div class="main-content">
       <!-- Sidebar Section -->
       <div class="sidebar">
-        <button @click="redirectToAddExpense" class="btn-add">Nov strošek</button>
-        <button @click="deleteExpense" class="btn-delete">Izbriši strošek</button>
+        <button @click="redirectToAddExpense" class="btn-add">{{ $t('newExpense') }}</button>
+        <button @click="deleteExpense" class="btn-delete">{{ $t('deleteExpense') }}</button>
 
         <!-- List of Expenses -->
         <ul>
@@ -27,25 +27,25 @@
 
       <!-- Detail Panel Section -->
       <div class="detail-panel">
-        <h2>Podrobnosti stroška</h2>
+        <h2>{{ $t('expenseDetails') }}</h2>
         <div class="details">
           <div>
-            <label for="description">Naziv stroška:</label>
+            <label for="description">{{ $t('expenseDescription') }}</label>
             <input v-model="selectedExpense.description" id="description" type="text" />
           </div>
           <div>
-            <label for="amount">Znesek:</label>
+            <label for="amount">{{ $t('amount') }}</label>
             <input v-model="selectedExpense.amount" id="amount" type="number" step="0.01" />
           </div>
           <div>
-            <label for="category">Kategorija:</label>
+            <label for="category">{{ $t('category') }}</label>
             <input v-model="selectedExpense.category" id="category" type="text" />
           </div>
           <div>
-            <label for="tripId">ID potovanja:</label>
+            <label for="tripId">{{ $t('tripId') }}</label>
             <input v-model="selectedExpense.trip_id" id="tripId" type="number" />
           </div>
-          <button @click="editExpense" class="btn-edit">Uredi</button>
+          <button @click="editExpense" class="btn-edit">{{ $t('editExpense') }}</button>
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import axios from 'axios'; // Ensure axios is installed
+import axios from 'axios';
 
 export default {
   data() {
