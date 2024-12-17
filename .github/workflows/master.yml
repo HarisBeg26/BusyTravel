@@ -9,57 +9,110 @@ on:
       - master
 
 jobs:
+  # Frontend Job
   frontend:
     runs-on: ubuntu-latest
     steps:
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Set up Node.js for frontend
       - name: Set up Node.js for frontend
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # Cache Node.js dependencies for frontend
+      - name: Cache frontend Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: frontend/business-travel-frontend/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('frontend/business-travel-frontend/**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      # Install dependencies for frontend with legacy-peer-deps
       - name: Install dependencies for frontend with legacy-peer-deps
         run: |
           cd frontend/business-travel-frontend  # Correct path to frontend
           npm install --legacy-peer-deps  # Add this flag
 
+      # Run frontend unit tests with coverage
       - name: Run frontend unit tests with coverage
         run: |
           cd frontend/business-travel-frontend  # Correct path to frontend
           npm run test:coverage
 
+      # Upload frontend test coverage reports as artifact
       - name: Upload frontend test coverage reports as artifact
         uses: actions/upload-artifact@v3
         with:
           name: frontend-coverage
           path: frontend/business-travel-frontend/coverage  # Correct path to coverage folder
 
+      # Build frontend app and save artifacts
+      - name: Build frontend app
+        run: |
+          cd frontend/business-travel-frontend
+          npm run build
+
+      - name: Save frontend build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/business-travel-frontend/dist  # Path to the built app
+
+  # Backend Job
   backend:
     runs-on: ubuntu-latest
     steps:
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Set up Node.js for backend
       - name: Set up Node.js for backend
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # Cache Node.js dependencies for backend
+      - name: Cache backend Node.js dependencies
+        uses: actions/cache@v3
+        with:
+          path: backend/business-travel-backend/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('backend/business-travel-backend/**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
+
+      # Install dependencies for backend
       - name: Install dependencies for backend
         run: |
           cd backend/business-travel-backend  # Correct path to backend
           npm install
 
+      # Run backend unit tests with coverage
       - name: Run backend unit tests with coverage
         run: |
           cd backend/business-travel-backend  # Correct path to backend
           npm run test:coverage
 
+      # Upload backend test coverage reports as artifact
       - name: Upload backend test coverage reports as artifact
         uses: actions/upload-artifact@v3
         with:
           name: backend-coverage
-          path: backend/business-travel-backend/coverage  
+          path: backend/business-travel-backend/coverage  # Correct path to coverage folder
 
+      # Build backend app and save artifacts
+      - name: Build backend app
+        run: |
+          cd backend/business-travel-backend
+          npm run build
+
+      - name: Save backend build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-build
+          path: backend/business-travel-backend/build  # Path to the built app or binaries
