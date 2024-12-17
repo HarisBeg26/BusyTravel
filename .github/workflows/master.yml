@@ -67,52 +67,35 @@ jobs:
   backend:
     runs-on: ubuntu-latest
     steps:
-      # Checkout code
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Set up Node.js for backend
-      - name: Set up Node.js for backend
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+    - name: Set up Node.js for backend
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
 
-      # Cache Node.js dependencies for backend
-      - name: Cache backend Node.js dependencies
-        uses: actions/cache@v3
-        with:
-          path: backend/business-travel-backend/node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('backend/business-travel-backend/**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
+    - name: Cache backend Node.js dependencies
+      uses: actions/cache@v3
+      with:
+        path: backend/business-travel-backend/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('backend/business-travel-backend/**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-
 
-      # Install dependencies for backend
-      - name: Install dependencies for backend
-        run: |
-          cd backend/business-travel-backend  # Correct path to backend
-          npm install
+    - name: Install dependencies for backend
+      run: |
+        cd backend/business-travel-backend  # Correct path to backend
+        npm install
 
-      # Run backend unit tests with coverage
-      - name: Run backend unit tests with coverage
-        run: |
-          cd backend/business-travel-backend  # Correct path to backend
-          npm run test:coverage
+    - name: Run backend unit tests with coverage
+      run: |
+        cd backend/business-travel-backend  # Correct path to backend
+        npm run test:coverage
 
-      # Upload backend test coverage reports as artifact
-      - name: Upload backend test coverage reports as artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: backend-coverage
-          path: backend/business-travel-backend/coverage  # Correct path to coverage folder
+    - name: Upload backend test coverage reports as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend-coverage
+        path: backend/business-travel-backend/coverage  # Correct path to coverage folder
 
-      # Build backend app and save artifacts
-      - name: Build backend app
-        run: |
-          cd backend/business-travel-backend
-          npm run build
-
-      - name: Save backend build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: backend-build
-          path: backend/business-travel-backend/build  # Path to the built app or binaries
