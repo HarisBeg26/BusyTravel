@@ -86,4 +86,77 @@ describe('TripsList.vue', () => {
         // Ensure that the trip's purpose is updated
         expect(wrapper.vm.trips[0].purpose).toBe('Updated Business');
     });
+
+    it('filters trips based on search query', async () => {
+        const wrapper = mount(TripsList);
+        await wrapper.vm.$nextTick(); // Wait for async data
+
+        // Simulate user typing in the search query
+        await wrapper.setData({ searchQuery: 'Paris' });
+
+        const tripItems = wrapper.findAll('li');
+        expect(tripItems).toHaveLength(1);
+        expect(tripItems.at(0).text()).toBe('Paris');
+    });
+
+    it('filters trips case-insensitively', async () => {
+        const wrapper = mount(TripsList);
+        await wrapper.vm.$nextTick(); // Wait for async data
+
+        // Simulate user typing in the search query in uppercase
+        await wrapper.setData({ searchQuery: 'paris' });
+
+        const tripItems = wrapper.findAll('li');
+        expect(tripItems).toHaveLength(1);
+        expect(tripItems.at(0).text()).toBe('Paris');
+    });
+
+    it('displays no trips when search query does not match any trip', async () => {
+        const wrapper = mount(TripsList);
+        await wrapper.vm.$nextTick(); // Wait for async data
+
+        // Simulate user typing in a query that does not match any trip
+        await wrapper.setData({ searchQuery: 'Berlin' });
+
+        const tripItems = wrapper.findAll('li');
+        expect(tripItems).toHaveLength(0); // No trips should be displayed
+    });
+
+    it('displays all trips when search query is cleared', async () => {
+        const wrapper = mount(TripsList);
+        await wrapper.vm.$nextTick(); // Wait for async data
+
+        // Filter trips with a search query
+        await wrapper.setData({ searchQuery: 'Paris' });
+        let tripItems = wrapper.findAll('li');
+        expect(tripItems).toHaveLength(1);
+        expect(tripItems.at(0).text()).toBe('Paris');
+
+        // Clear the search query
+        await wrapper.setData({ searchQuery: '' });
+
+        tripItems = wrapper.findAll('li');
+        expect(tripItems).toHaveLength(2); // All trips should be displayed
+    });
+
+    it('selects a trip when clicked', async () => {
+        // Ensure data is loaded and DOM is updated
+        await wrapper.vm.$nextTick();
+
+        // Find all li elements after DOM update
+        const tripItems = wrapper.findAll('li');
+
+        // Ensure there is at least one trip item
+        expect(tripItems).toHaveLength(2); // Adjust this based on your mock data length
+
+        // Simulate user clicking on the first trip (Paris in your mock)
+        const firstTripItem = tripItems.at(0);
+        await firstTripItem.trigger('click');
+
+        // Verify that the selectedTrip data is updated
+        expect(wrapper.vm.selectedTrip.id).toBe(1);
+        expect(wrapper.vm.selectedTrip.destination).toBe('New York');
+        expect(wrapper.vm.selectedTrip.purpose).toBe('Business'); // Adjust this based on your mock data
+    });
+
 });

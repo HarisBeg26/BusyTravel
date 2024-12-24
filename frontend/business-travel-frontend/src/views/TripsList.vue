@@ -12,10 +12,18 @@
         <button @click="redirectToAddTravel" class="btn-add">{{ $t('newTrip') }}</button>
         <button @click="deleteTravel" class="btn-delete">{{ $t('deleteTrip') }}</button>
 
+        <!-- Search Bar -->
+        <input
+            v-model="searchQuery"
+            type="text"
+            class="search-bar"
+            :placeholder="$t('Search')"
+        />
+
         <!-- List of Trips -->
         <ul>
           <li
-              v-for="trip in trips"
+              v-for="trip in filteredTrips"
               :key="trip.id"
               @click="selectTrip(trip)"
               :class="{ selected: selectedTrip.id === trip.id }"
@@ -53,82 +61,67 @@
 </template>
 
 <script>
-import axios from 'axios'; // Make sure axios is installed
+import axios from "axios";
 
 export default {
   data() {
     return {
-      trips: [], // Initially empty, will be populated from API
-      selectedTrip: { // Ensure this object is defined with default values
-        id: null,
-        purpose: '',
-        destination: '',
-        startDate: '',
-        endDate: ''
-      },
+      trips: [], // Trips data
+      selectedTrip: { id: null, purpose: '', destination: '', startDate: '', endDate: '' },
+      searchQuery: '', // For keyword search
     };
   },
+  computed: {
+    filteredTrips() {
+      // Filter trips based on the search query
+      return this.trips.filter((trip) =>
+          trip.destination.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
+  },
   mounted() {
-    // Fetch trips data when component is mounted
     this.fetchTrips();
   },
   methods: {
     async fetchTrips() {
       try {
-        const response = await axios.get('http://localhost:3000/api/trips');
-        this.trips = response.data; // Populate trips data from API response
+        const response = await axios.get("http://localhost:3000/api/trips");
+        this.trips = response.data;
       } catch (error) {
         console.error("Error fetching trips:", error);
       }
     },
-
     selectTrip(trip) {
-      this.selectedTrip = { ...trip };  // Make sure the trip object is copied to selectedTrip
+      this.selectedTrip = { ...trip };
     },
-
     redirectToAddTravel() {
-      this.$router.push('/add-trip'); // Redirect to the Add Trip page
+      this.$router.push("/add-trip");
     },
-
     async deleteTravel() {
       if (this.selectedTrip.id) {
-        // Call API to delete the selected trip
-        await axios.delete(`http://localhost:3000/api/trips/${this.selectedTrip.id}`)
-            .then(() => {
-              // Remove the deleted trip from the local trips list
-              this.trips = this.trips.filter(trip => trip.id !== this.selectedTrip.id);
-              this.selectedTrip = { id: null, purpose: '', destination: '', startDate: '', endDate: '' }; // Reset selected trip
-            })
-            .catch(error => {
-              console.error("Error deleting trip:", error);
-            });
+        try {
+          await axios.delete(`http://localhost:3000/api/trips/${this.selectedTrip.id}`);
+          this.trips = this.trips.filter((trip) => trip.id !== this.selectedTrip.id);
+          this.selectedTrip = { id: null, purpose: '', destination: '', startDate: '', endDate: '' };
+        } catch (error) {
+          console.error("Error deleting trip:", error);
+        }
       }
     },
-
     async editTravel() {
       if (this.selectedTrip.id) {
         try {
-          const updatedTrip = {
-            ...this.selectedTrip,
-            start_date: this.selectedTrip.startDate || null,
-            end_date: this.selectedTrip.endDate || null,
-          };
           const response = await axios.put(
               `http://localhost:3000/api/trips/${this.selectedTrip.id}`,
-              updatedTrip
+              this.selectedTrip
           );
-          console.log("Response:", response.data);
-
-          // Update the trips list locally
-          const updatedTripIndex = this.trips.findIndex(trip => trip.id === this.selectedTrip.id);
-          if (updatedTripIndex !== -1) {
-            this.trips.splice(updatedTripIndex, 1, response.data);
-          }
+          const updatedIndex = this.trips.findIndex((trip) => trip.id === this.selectedTrip.id);
+          if (updatedIndex !== -1) this.trips.splice(updatedIndex, 1, response.data);
         } catch (error) {
           console.error("Error editing trip:", error);
         }
       }
-    }
+    },
   },
 };
 </script>
@@ -180,12 +173,12 @@ export default {
 .sidebar li {
   cursor: pointer;
   padding: 5px 0;
-  color:#333;
+  color: #333;
 }
 
 .sidebar li:hover {
   background-color: #ddd;
-  color:#000;
+  color: #000;
 }
 
 .detail-panel {
@@ -222,5 +215,15 @@ export default {
   color: white;
   border: none;
   cursor: pointer;
+}
+
+.search-bar {
+  width: calc(100% - 20px); /* Ensure the search bar fits within the sidebar */
+  padding: 8px;
+  margin: 10px; /* Add consistent spacing around the search bar */
+  font-size: 14px;
+  box-sizing: border-box; /* Prevent the padding from exceeding the width */
+  border: 1px solid #ccc; /* Add a subtle border */
+  border-radius: 4px; /* Rounded corners for a cleaner look */
 }
 </style>

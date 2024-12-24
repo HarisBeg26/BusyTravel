@@ -66,4 +66,65 @@ describe('ExpensesList.vue', () => {
         await wrapper.find('.btn-edit').trigger('click');
         expect(wrapper.vm.expenses[0].description).toBe('Updated Expense');
     });
+
+    it('filters expenses based on search query', async () => {
+        wrapper.setData({
+            expenses: [
+                { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+                { id: 2, description: 'Food Expense', amount: 200, category: 'Food', trip_id: 2 },
+            ],
+            searchQuery: 'Travel',
+        });
+        expect(wrapper.vm.filteredExpenses).toEqual([
+            { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+        ]);
+    });
+
+    it('returns all expenses when search query is empty', async () => {
+        const expenses = [
+            { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+            { id: 2, description: 'Food Expense', amount: 200, category: 'Food', trip_id: 2 },
+        ];
+        wrapper.setData({ expenses, searchQuery: '' });
+        expect(wrapper.vm.filteredExpenses).toEqual(expenses);
+    });
+
+    it('handles case-insensitive search', async () => {
+        wrapper.setData({
+            expenses: [
+                { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+                { id: 2, description: 'Food Expense', amount: 200, category: 'Food', trip_id: 2 },
+            ],
+            searchQuery: 'travel',
+        });
+        expect(wrapper.vm.filteredExpenses).toEqual([
+            { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+        ]);
+    });
+
+    it('filters multiple results if they match the query', async () => {
+        wrapper.setData({
+            expenses: [
+                { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+                { id: 2, description: 'Food Expense', amount: 200, category: 'Food', trip_id: 2 },
+                { id: 3, description: 'Travel Supplies', amount: 50, category: 'Travel', trip_id: 1 },
+            ],
+            searchQuery: 'Travel',
+        });
+        expect(wrapper.vm.filteredExpenses).toEqual([
+            { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+            { id: 3, description: 'Travel Supplies', amount: 50, category: 'Travel', trip_id: 1 },
+        ]);
+    });
+
+    it('returns an empty array when no expenses match the query', async () => {
+        wrapper.setData({
+            expenses: [
+                { id: 1, description: 'Travel Expense', amount: 100, category: 'Travel', trip_id: 1 },
+                { id: 2, description: 'Food Expense', amount: 200, category: 'Food', trip_id: 2 },
+            ],
+            searchQuery: 'Nonexistent',
+        });
+        expect(wrapper.vm.filteredExpenses).toEqual([]);
+    });
 });

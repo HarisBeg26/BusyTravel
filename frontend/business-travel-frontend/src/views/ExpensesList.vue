@@ -9,13 +9,19 @@
     <div class="main-content">
       <!-- Sidebar Section -->
       <div class="sidebar">
+        <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search expenses..."
+            class="search-bar"
+        />
         <button @click="redirectToAddExpense" class="btn-add">{{ $t('newExpense') }}</button>
         <button @click="deleteExpense" class="btn-delete">{{ $t('deleteExpense') }}</button>
 
         <!-- List of Expenses -->
         <ul>
           <li
-              v-for="expense in expenses"
+              v-for="expense in filteredExpenses"
               :key="expense.id"
               @click="selectExpense(expense)"
               :class="{ selected: selectedExpense.id === expense.id }"
@@ -65,37 +71,43 @@ export default {
         category: '',
         trip_id: null,
       },
+      searchQuery: '', // For the search bar
     };
   },
   mounted() {
     // Fetch expenses when component is mounted
     this.fetchExpenses();
   },
+  computed: {
+    filteredExpenses() {
+      // Filter expenses based on searchQuery (case-insensitive)
+      return this.expenses.filter(expense => {
+        const description = expense.description.toLowerCase();
+        return description.includes(this.searchQuery.toLowerCase());
+      });
+    },
+  },
   methods: {
     async fetchExpenses() {
       try {
         const response = await axios.get('http://localhost:3000/api/expenses');
         console.log("Fetched expenses:", response.data);
-        this.expenses = response.data; // Populate expenses from API response
+        this.expenses = response.data;
       } catch (error) {
         console.error("Error fetching expenses:", error);
       }
     },
-
     selectExpense(expense) {
       this.selectedExpense = { ...expense };
       console.log("Selected expense:", this.selectedExpense);
     },
-
     redirectToAddExpense() {
-      this.$router.push('/add-expense'); // Redirect to the Add Expense page
+      this.$router.push('/add-expense'); // Redirect to Add Expense page
     },
-
     async deleteExpense() {
       if (this.selectedExpense.id) {
         try {
           await axios.delete(`http://localhost:3000/api/expenses/${this.selectedExpense.id}`);
-          // Remove the deleted expense from the local list
           this.expenses = this.expenses.filter(expense => expense.id !== this.selectedExpense.id);
           this.selectedExpense = { description: '', amount: '', category: '', trip_id: null };
         } catch (error) {
@@ -103,7 +115,6 @@ export default {
         }
       }
     },
-
     async editExpense() {
       if (this.selectedExpense.id) {
         try {
@@ -114,7 +125,6 @@ export default {
           );
           console.log("Updated expense:", response.data);
 
-          // Update the expenses list locally
           const updatedExpenseIndex = this.expenses.findIndex(exp => exp.id === this.selectedExpense.id);
           if (updatedExpenseIndex !== -1) {
             this.expenses.splice(updatedExpenseIndex, 1, response.data);
@@ -221,5 +231,14 @@ export default {
 
 .details button:hover {
   background-color: #005f8a; /* Darker Blue */
+}
+
+.search-bar {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>
