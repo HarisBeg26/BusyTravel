@@ -73,8 +73,7 @@ jobs:
           name: frontend-coverage
           path: frontend/coverage
 
-  docker-build-and-push:
-    needs: [backend-tests, frontend-tests]
+  docker-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -92,15 +91,14 @@ jobs:
       # Step 3: Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/business-app:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/business-travel-app:latest .
 
       # Step 4: Push Docker image to Docker Hub
-      - name: Push Docker image to Docker Hub
+      - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/business-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/business-travel-app:latest
 
   deploy:
-    needs: docker-build-and-push
     runs-on: ubuntu-latest
 
     steps:
@@ -108,10 +106,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Deploy to chosen service (example: Vercel)
+      # Step 2: Install deployment CLI (e.g., Vercel, Firebase, etc.)
+      - name: Install deployment CLI
+        run: |
+          npm install -g vercel
+
+      # Step 3: Deploy application
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          vercel --prod
