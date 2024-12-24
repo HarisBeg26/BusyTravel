@@ -13,17 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # Step 3: Install and test backend
       - name: Install dependencies
         run: |
           cd backend
@@ -34,7 +31,6 @@ jobs:
           cd backend
           npm run test:coverage
 
-      # Step 4: Upload backend coverage report
       - name: Upload backend coverage report
         uses: actions/upload-artifact@v3
         with:
@@ -45,17 +41,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # Step 3: Install and test frontend
       - name: Install dependencies
         run: |
           cd frontend
@@ -66,54 +59,49 @@ jobs:
           cd frontend
           npm run test:coverage
 
-      # Step 4: Upload frontend coverage report
       - name: Upload frontend coverage report
         uses: actions/upload-artifact@v3
         with:
           name: frontend-coverage
           path: frontend/coverage
 
-  docker-build:
+  docker-build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 3: Build Docker image
-      - name: Build Docker image
+      - name: Build and push backend Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/business-travel-app:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-app:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
 
-      # Step 4: Push Docker image to Docker Hub
-      - name: Push Docker image
+      - name: Build and push frontend Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/business-travel-app:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
 
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Install deployment CLI (e.g., Vercel, Firebase, etc.)
-      - name: Install deployment CLI
+      - name: Deploy backend to Heroku
         run: |
-          npm install -g vercel
+          heroku container:push web -a ${{ secrets.HEROKU_BACKEND_APP }}
+          heroku container:release web -a ${{ secrets.HEROKU_BACKEND_APP }}
 
-      # Step 3: Deploy application
-      - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy frontend to Firebase Hosting
         run: |
-          vercel --prod
+          npm install -g firebase-tools
+          cd frontend
+          firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
