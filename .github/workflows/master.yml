@@ -118,7 +118,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: [frontend, backend, docker]
     steps:
-      - name: Deploy Frontend to Vercel
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: List files in the root directory for debugging
         run: |
+          ls -R .
+
+      - name: List files in the frontend directory for debugging
+        run: |
+          ls -R ./frontend
+
+      - name: Change to frontend directory and deploy
+        run: |
+          cd frontend/business-travel-frontend
           npm install -g vercel
-          vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }} ./frontend/business-travel-frontend
+          vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
