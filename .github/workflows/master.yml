@@ -1,4 +1,4 @@
-name: CI Workflow
+name: CI/CD Pipeline
 
 on:
   push:
@@ -9,93 +9,99 @@ on:
       - master
 
 jobs:
-  # Frontend Job
-  frontend:
+  backend-tests:
     runs-on: ubuntu-latest
+
     steps:
-      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Node.js for frontend
-      - name: Set up Node.js for frontend
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18
 
-      # Cache Node.js dependencies for frontend
-      - name: Cache frontend Node.js dependencies
-        uses: actions/cache@v3
-        with:
-          path: frontend/business-travel-frontend/node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('frontend/business-travel-frontend/**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
-
-      # Install dependencies for frontend with legacy-peer-deps
-      - name: Install dependencies for frontend with legacy-peer-deps
+      - name: Install dependencies
         run: |
-          cd frontend/business-travel-frontend  # Correct path to frontend
-          npm install --legacy-peer-deps  # Add this flag
+          cd backend
+          npm install
 
-      # Run frontend unit tests with coverage
-      - name: Run frontend unit tests with coverage
+      - name: Run backend tests
         run: |
-          cd frontend/business-travel-frontend  # Correct path to frontend
+          cd backend
           npm run test:coverage
 
-      # Upload frontend test coverage reports as artifact
-      - name: Upload frontend test coverage reports as artifact
+      - name: Upload backend coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-coverage
+          path: backend/coverage
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm run test:coverage
+
+      - name: Upload frontend coverage report
         uses: actions/upload-artifact@v3
         with:
           name: frontend-coverage
-          path: frontend/business-travel-frontend/coverage  # Correct path to coverage folder
+          path: frontend/coverage
 
-      # Build frontend app and save artifacts
-      - name: Build frontend app
-        run: |
-          cd frontend/business-travel-frontend
-          npm run build
-
-      - name: Save frontend build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: frontend-build
-          path: frontend/business-travel-frontend/dist  # Path to the built app
-
-  # Backend Job
-  backend:
+  docker-build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js for backend
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Cache backend Node.js dependencies
-      uses: actions/cache@v3
-      with:
-        path: backend/business-travel-backend/node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('backend/business-travel-backend/**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-modules-
+      - name: Build and push backend Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/backend-app:latest ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/backend-app:latest
 
-    - name: Install dependencies for backend
-      run: |
-        cd backend/business-travel-backend  # Correct path to backend
-        npm install
+      - name: Build and push frontend Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
 
-    - name: Run backend unit tests with coverage
-      run: |
-        cd backend/business-travel-backend  # Correct path to backend
-        npm run test:coverage
+  deploy:
+    runs-on: ubuntu-latest
 
-    - name: Upload backend test coverage reports as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: backend-coverage
-        path: backend/business-travel-backend/coverage  # Correct path to coverage folder
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Deploy backend to Heroku
+        run: |
+          heroku container:push web -a ${{ secrets.HEROKU_BACKEND_APP }}
+          heroku container:release web -a ${{ secrets.HEROKU_BACKEND_APP }}
+
+      - name: Deploy frontend to Firebase Hosting
+        run: |
+          npm install -g firebase-tools
+          cd frontend
+          firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
