@@ -119,7 +119,6 @@ jobs:
             exit 1
           fi
 
-
       - name: Build Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/business-travel-backend:${{ env.tag }} ./backend/business-travel-backend
@@ -127,27 +126,26 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/business-travel-backend:${{ env.tag }}
-          
-    # Deployment Job
-    deploy:
-     runs-on: ubuntu-latest
-     needs: [frontend, backend, docker]
-     environment:
+
+  # Deployment Job
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [frontend, backend, docker]
+    environment:
       name: ${{ github.ref_name == 'main' && 'Development' || github.ref_name == 'production' && 'Production' }}
-     steps:
-       - name: Checkout code
-         uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-       - name: Deploy to Development or Production
-         run: |
-           if [[ "${GITHUB_REF_NAME}" == "master" || "${GITHUB_REF_NAME}" == "main" ]]; then
-             echo "Deploying to Development"
+      - name: Deploy to Development or Production
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "master" || "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "Deploying to Development"
             # Add deployment commands for Development
-           elif [[ "${GITHUB_REF_NAME}" == "production" ]]; then
-             echo "Deploying to Production"
+          elif [[ "${GITHUB_REF_NAME}" == "production" ]]; then
+            echo "Deploying to Production"
             # Add deployment commands for Production
-           else
-             echo "Invalid branch: ${GITHUB_REF_NAME}. Exiting."
-             exit 1
-           fi
-
+          else
+            echo "Invalid branch: ${GITHUB_REF_NAME}. Exiting."
+            exit 1
+          fi
