@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - production
   pull_request:
     branches:
       - master
+      - production
 
 jobs:
   # Frontend Job
@@ -105,32 +107,44 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Determine Docker tag
+        id: docker_tag
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "tag=dev" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "production" ]]; then
+            echo "tag=prod" >> $GITHUB_ENV
+          else
+            echo "Invalid branch. Exiting."
+            exit 1
+
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/business-travel-backend:latest ./backend/business-travel-backend
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/business-travel-backend:${{ env.tag }} ./backend/business-travel-backend
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/business-travel-backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/business-travel-backend:${{ env.tag }}
 
-  # Deployment Job
+    # Deployment Job
   deploy:
     runs-on: ubuntu-latest
     needs: [frontend, backend, docker]
+    environment:
+      name: ${{ github.ref_name == 'main' && 'Development' || github.ref_name == 'production' && 'Production' }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: List files in the root directory for debugging
+      - name: Deploy to Development or Production
         run: |
-          ls -R .
-
-      - name: List files in the frontend directory for debugging
-        run: |
-          ls -R ./frontend
-
-      - name: Change to frontend directory and deploy
-        run: |
-          cd frontend/business-travel-frontend
-          npm install -g vercel
-          vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }} --yes
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "Deploying to Development"
+            # Add deployment commands for Development
+          elif [[ "${{ github.ref_name }}" == "production" ]]; then
+            echo "Deploying to Production"
+            # Add deployment commands for Production
+          else
+            echo "Invalid branch for deployment. Exiting."
+            exit 1
