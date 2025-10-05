@@ -1,25 +1,40 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import { createI18n } from "vue-i18n";
-import router from "./router"; // If you have a router setup
+import router from "./router";
+
+// Import PrimeVue
+import PrimeVue from 'primevue/config';
+import 'primeicons/primeicons.css';
+import ToastService from 'primevue/toastservice';
+import Tooltip from 'primevue/tooltip';
 
 // Import locale messages
 import en from "@/locales/en.json";
 import sl from "@/locales/sl.json";
-import bs from "@/locales/bh.json";
+import bh from "@/locales/bh.json";
 
 // Set up i18n instance with locale messages
 const i18n = createI18n({
-    locale: "en", // Default language
-    fallbackLocale: "en", // Fallback language if the current language is missing translations
+    locale: localStorage.getItem('userLanguage') || "en", // Default language with localStorage support
+    fallbackLocale: "en",
     messages: {
-        en, // English translations
-        sl, // Slovenian translations
-        bs, // Bosnian translations
-    },
+        en,
+        sl,
+        bh
+    }
 });
 
 const app = createApp(App);
+
+// Use PrimeVue with default configuration
+app.use(PrimeVue);
+
+// Use ToastService for notifications
+app.use(ToastService);
+
+// Register Tooltip directive
+app.directive('tooltip', Tooltip);
 
 // Use i18n and router
 app.use(i18n);
