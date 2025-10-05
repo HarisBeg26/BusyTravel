@@ -121,6 +121,8 @@
 
 <script>
 import axios from "axios";
+import { ref } from "vue";
+import config from "../config.js";
 import Card from 'primevue/card';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -175,7 +177,7 @@ export default {
     async fetchTrips() {
       this.loading = true;
       try {
-        const response = await axios.get("http://localhost:3000/api/trips");
+        const response = await axios.get(`${config.apiBaseUrl}/trips`);
         this.trips = response.data;
       } catch (error) {
         console.error("Error fetching trips:", error);
@@ -192,7 +194,7 @@ export default {
     },
     async createTrip(tripData) {
       try {
-        const response = await axios.post("http://localhost:3000/api/trips", tripData);
+        const response = await axios.post(`${config.apiBaseUrl}/trips`, tripData);
         this.trips.unshift(response.data);
       } catch (error) {
         console.error("Error creating trip:", error);
@@ -201,7 +203,7 @@ export default {
     async saveTrip() {
       try {
         const response = await axios.put(
-          `http://localhost:3000/api/trips/${this.editingTrip.id}`,
+          `${config.apiBaseUrl}/trips/${this.editingTrip.id}`,
           this.editingTrip
         );
         const updatedIndex = this.trips.findIndex((trip) => trip.id === this.editingTrip.id);
@@ -217,7 +219,7 @@ export default {
     },
     async deleteTrip() {
       try {
-        await axios.delete(`http://localhost:3000/api/trips/${this.tripToDelete.id}`);
+        await axios.delete(`${config.apiBaseUrl}/trips/${this.tripToDelete.id}`);
         this.trips = this.trips.filter((trip) => trip.id !== this.tripToDelete.id);
         this.deleteDialogVisible = false;
         this.tripToDelete = null;

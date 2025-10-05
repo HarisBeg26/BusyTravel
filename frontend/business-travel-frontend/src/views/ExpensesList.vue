@@ -156,6 +156,7 @@
 
 <script>
 import axios from 'axios';
+import config from '../config.js';
 import Card from 'primevue/card';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -216,7 +217,7 @@ export default {
     async fetchExpenses() {
       this.loading = true;
       try {
-        const response = await axios.get('http://localhost:3000/api/expenses');
+        const response = await axios.get(`${config.apiBaseUrl}/expenses`);
         this.expenses = response.data;
       } catch (error) {
         console.error('Error fetching expenses:', error);
@@ -229,7 +230,7 @@ export default {
     },
     async createExpense(expenseData) {
       try {
-        const response = await axios.post('http://localhost:3000/api/expenses', expenseData);
+        const response = await axios.post(`${config.apiBaseUrl}/expenses`, expenseData);
         this.expenses.unshift(response.data);
       } catch (error) {
         console.error('Error creating expense:', error);
@@ -243,7 +244,7 @@ export default {
       try {
         const updatedExpense = { ...this.editingExpense };
         const response = await axios.put(
-          `http://localhost:3000/api/expenses/${this.editingExpense.id}`,
+          `${config.apiBaseUrl}/expenses/${this.editingExpense.id}`,
           updatedExpense
         );
         const updatedExpenseIndex = this.expenses.findIndex(
@@ -264,7 +265,7 @@ export default {
     async deleteExpense() {
       try {
         await axios.delete(
-          `http://localhost:3000/api/expenses/${this.expenseToDelete.id}`
+          `${config.apiBaseUrl}/expenses/${this.expenseToDelete.id}`
         );
         this.expenses = this.expenses.filter(
           (expense) => expense.id !== this.expenseToDelete.id
