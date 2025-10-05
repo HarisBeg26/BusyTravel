@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "buildCommand": "cd frontend/business-travel-frontend && npm install && npm run build",
+  "outputDirectory": "frontend/business-travel-frontend/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+
