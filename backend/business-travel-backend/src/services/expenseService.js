@@ -2,7 +2,7 @@ const config = require('../config');
 const { createClient } = require('@supabase/supabase-js');
 const Expense = require('../models/expenseModel');
 
-const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_KEY);
+const supabase = createClient(config.supabaseUrl, config.supabaseKey);
 
 exports.createExpense = async (data) => {
     try {

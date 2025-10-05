@@ -2,7 +2,7 @@ const config = require('../config');
 const { createClient } = require('@supabase/supabase-js');
 const Trip = require('../models/tripModel');
 
-const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_KEY);
+const supabase = createClient(config.supabaseUrl, config.supabaseKey);
 
 exports.createTrip = async (tripData) => {
     console.log("Trip data received in service:", tripData);
