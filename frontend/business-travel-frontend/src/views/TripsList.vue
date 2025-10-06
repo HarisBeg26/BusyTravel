@@ -54,30 +54,30 @@
             >
               <Column field="destination" :header="$t('destination')" :sortable="true" class="destination-column">
                 <template #body="slotProps">
-                  <div class="destination-cell">
+                  <div class="destination-cell" v-if="slotProps.data">
                     <i class="pi pi-map-marker destination-icon"></i>
-                    <span class="destination-text">{{ slotProps.data.destination }}</span>
+                    <span class="destination-text">{{ slotProps.data && slotProps.data.destination }}</span>
                   </div>
                 </template>
               </Column>
               <Column field="purpose" :header="$t('tripName')" :sortable="true" class="purpose-column">
                 <template #body="slotProps">
-                  <span class="purpose-text">{{ slotProps.data.purpose }}</span>
+                  <span class="purpose-text" v-if="slotProps.data">{{ slotProps.data && slotProps.data.purpose }}</span>
                 </template>
               </Column>
               <Column field="startDate" :header="$t('startDate')" :sortable="true" class="date-column">
                 <template #body="slotProps">
-                  <Tag severity="info" :value="formatDate(slotProps.data.startDate)" class="date-tag" />
+                  <Tag v-if="slotProps.data" severity="info" :value="formatDate(slotProps.data.startDate)" class="date-tag" />
                 </template>
               </Column>
               <Column field="endDate" :header="$t('endDate')" :sortable="true" class="date-column">
                 <template #body="slotProps">
-                  <Tag severity="success" :value="formatDate(slotProps.data.endDate)" class="date-tag" />
+                  <Tag v-if="slotProps.data" severity="success" :value="formatDate(slotProps.data.endDate)" class="date-tag" />
                 </template>
               </Column>
               <Column :header="$t('editTrip')" class="actions-column">
                 <template #body="slotProps">
-                  <div class="action-buttons">
+                  <div class="action-buttons" v-if="slotProps.data">
                     <Button
                       icon="pi pi-pencil"
                       class="p-button-rounded p-button-sm p-button-warning action-btn edit-btn"
@@ -213,11 +213,26 @@ export default {
           `${config.apiBaseUrl}/trips/${this.editingTrip.id}`,
           this.editingTrip
         );
-        const updatedIndex = this.trips.findIndex((trip) => trip.id === this.editingTrip.id);
-        if (updatedIndex !== -1) this.trips.splice(updatedIndex, 1, response.data);
+
+        // Check if response and data are valid before updating
+        if (response && response.data) {
+          const updatedIndex = this.trips.findIndex((trip) => trip && trip.id === this.editingTrip.id);
+          if (updatedIndex !== -1) {
+            this.trips.splice(updatedIndex, 1, response.data);
+          }
+        } else {
+          console.error("Invalid response data when saving trip");
+        }
+
+        // Refresh data to ensure consistency
+        await this.fetchTrips();
         this.editDialogVisible = false;
       } catch (error) {
         console.error("Error editing trip:", error);
+        // Still close the modal even if there's an error
+        this.editDialogVisible = false;
+        // Refresh trips to ensure data is consistent
+        this.fetchTrips();
       }
     },
     confirmDelete(trip) {
