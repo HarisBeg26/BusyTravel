@@ -4,7 +4,7 @@
 const config = {
   // API base URL that changes based on environment
   apiBaseUrl: import.meta.env.PROD
-    ? 'https://busytravel.onrender.com/' // Replace with your actual Render backend URL
+    ? 'https://busytravel.onrender.com' // Removed the trailing slash
     : 'http://localhost:3000/api'
 };
 
