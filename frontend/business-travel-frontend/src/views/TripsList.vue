@@ -207,16 +207,22 @@ export default {
         console.error("Error creating trip:", error);
       }
     },
-    async saveTrip() {
+    async saveTrip(updatedTripData) {
       try {
+        // Make sure we have a valid updated trip data with ID
+        if (!updatedTripData || !updatedTripData.id) {
+          console.error("Invalid trip data received");
+          return;
+        }
+
         const response = await axios.put(
-          `${config.apiBaseUrl}/trips/${this.editingTrip.id}`,
-          this.editingTrip
+          `${config.apiBaseUrl}/trips/${updatedTripData.id}`,
+          updatedTripData
         );
 
         // Check if response and data are valid before updating
         if (response && response.data) {
-          const updatedIndex = this.trips.findIndex((trip) => trip && trip.id === this.editingTrip.id);
+          const updatedIndex = this.trips.findIndex((trip) => trip && trip.id === updatedTripData.id);
           if (updatedIndex !== -1) {
             this.trips.splice(updatedIndex, 1, response.data);
           }

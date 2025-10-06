@@ -240,22 +240,40 @@ export default {
       this.editingExpense = { ...expense };
       this.editDialogVisible = true;
     },
-    async saveExpense() {
+    async saveExpense(updatedExpenseData) {
       try {
-        const updatedExpense = { ...this.editingExpense };
-        const response = await axios.put(
-          `${config.apiBaseUrl}/expenses/${this.editingExpense.id}`,
-          updatedExpense
-        );
-        const updatedExpenseIndex = this.expenses.findIndex(
-          (exp) => exp.id === this.editingExpense.id
-        );
-        if (updatedExpenseIndex !== -1) {
-          this.expenses.splice(updatedExpenseIndex, 1, response.data);
+        // Make sure we have a valid updated expense data with ID
+        if (!updatedExpenseData || !updatedExpenseData.id) {
+          console.error("Invalid expense data received");
+          return;
         }
+
+        const response = await axios.put(
+          `${config.apiBaseUrl}/expenses/${updatedExpenseData.id}`,
+          updatedExpenseData
+        );
+
+        // Check if response and data are valid before updating
+        if (response && response.data) {
+          const updatedExpenseIndex = this.expenses.findIndex(
+            (exp) => exp && exp.id === updatedExpenseData.id
+          );
+          if (updatedExpenseIndex !== -1) {
+            this.expenses.splice(updatedExpenseIndex, 1, response.data);
+          }
+        } else {
+          console.error("Invalid response data when saving expense");
+        }
+
+        // Refresh data to ensure consistency
+        await this.fetchExpenses();
         this.editDialogVisible = false;
       } catch (error) {
         console.error('Error editing expense:', error);
+        // Still close the modal even if there's an error
+        this.editDialogVisible = false;
+        // Refresh expenses to ensure data is consistent
+        this.fetchExpenses();
       }
     },
     confirmDelete(expense) {
