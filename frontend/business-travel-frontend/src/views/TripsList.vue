@@ -164,10 +164,17 @@ export default {
   },
   computed: {
     filteredTrips() {
-      return this.trips.filter((trip) =>
-        trip.destination.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        trip.purpose.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
+      if (!this.searchQuery) {
+        return this.trips;
+      }
+      const query = this.searchQuery.toLowerCase();
+      return this.trips.filter((trip) => {
+        if (!trip) return false;
+        return (
+          (trip.destination && trip.destination.toLowerCase().includes(query)) ||
+          (trip.purpose && trip.purpose.toLowerCase().includes(query))
+        );
+      });
     },
   },
   mounted() {
