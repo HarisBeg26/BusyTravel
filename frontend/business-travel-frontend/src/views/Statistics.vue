@@ -105,6 +105,7 @@ import Card from 'primevue/card';
 import Button from 'primevue/button';
 import ProgressSpinner from 'primevue/progressspinner';
 import { useRouter } from 'vue-router';
+import config from '../config';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, BarController);
 
@@ -131,7 +132,7 @@ export default {
 
     const fetchExpenseStatistics = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/statistics/expense-statistics');
+        const response = await axios.get(`${config.apiBaseUrl}/statistics/expense-statistics`);
         console.log('API Response:', response.data);
         expenseData.value = Array.isArray(response.data) ? response.data : [];
         console.log('Fetched Expense Data:', expenseData.value);
