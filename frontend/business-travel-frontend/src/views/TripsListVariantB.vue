@@ -90,7 +90,7 @@
               </template>
             </Column>
             
-            <Column :header="$t('editTrip')" class="actions-column">
+            <Column header="Actions" class="actions-column">
               <template #body="slotProps">
                 <div class="action-buttons" v-if="slotProps.data">
                   <Button
@@ -339,7 +339,7 @@ export default {
 
 .search-input-compact {
   width: 320px;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  padding: 0.75rem 1rem 0.75rem 3rem;
   border-radius: 10px;
   border: 1px solid #e2e8f0;
   background: #f8f9fa;

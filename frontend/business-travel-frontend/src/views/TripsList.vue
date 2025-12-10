@@ -75,7 +75,7 @@
                   <Tag v-if="slotProps.data" severity="success" :value="formatDate(slotProps.data.endDate)" class="date-tag" />
                 </template>
               </Column>
-              <Column :header="$t('editTrip')" class="actions-column">
+              <Column header="Actions" class="actions-column">
                 <template #body="slotProps">
                   <div class="action-buttons" v-if="slotProps.data">
                     <Button
