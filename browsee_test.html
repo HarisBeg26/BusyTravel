@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browsee A/B Testing - Test Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        .status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+        .status.success {
+            background: #10b981;
+            color: white;
+        }
+        .status.error {
+            background: #ef4444;
+            color: white;
+        }
+        .section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        .test-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .log {
+            background: #1a1c23;
+            color: #0f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .log-entry {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+        }
+        .log-time {
+            color: #888;
+            margin-right: 1rem;
+        }
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .link-card {
+            padding: 1.5rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        .link-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-4px);
+        }
+        .link-card h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .link-card p {
+            color: #6b7280;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Browsee A/B Testing - Test Page</h1>
+        <div id="status" class="status">Checking Browsee...</div>
+
+        <div class="section">
+            <h2>📊 Browsee SDK Status</h2>
+            <p><strong>API Key:</strong> <code>85fdc052178b978ab4d546170614f5c754a024343dcfe761</code></p>
+            <p><strong>Initialized:</strong> <span id="initialized">Checking...</span></p>
+            <p><strong>Session Active:</strong> <span id="session">Checking...</span></p>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Test Events</h2>
+            <p>Kliknite gumbe za ročno testiranje dogodkov:</p>
+            <div class="test-buttons">
+                <button class="btn-primary" onclick="testPageView()">
+                    📄 Test Page View
+                </button>
+                <button class="btn-secondary" onclick="testButtonClick()">
+                    🖱️ Test Button Click
+                </button>
+                <button class="btn-success" onclick="testNavigation()">
+                    🧭 Test Navigation
+                </button>
+                <button class="btn-primary" onclick="testABAssignment()">
+                    🔀 Test A/B Assignment
+                </button>
+                <button class="btn-secondary" onclick="testSearch()">
+                    🔍 Test Search
+                </button>
+                <button class="btn-success" onclick="testCRUD()">
+                    ✏️ Test CRUD Operation
+                </button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📝 Event Log</h2>
+            <div id="log" class="log">
+                <div class="log-entry">
+                    <span class="log-time">Waiting for events...</span>
+                </div>
+            </div>
+            <button onclick="clearLog()" style="margin-top: 1rem; background: #6b7280;">
+                🗑️ Clear Log
+            </button>
+        </div>
+
+        <div class="section">
+            <h2>🔗 Quick Links</h2>
+            <div class="links">
+                <a href="http://localhost:5173/" class="link-card" target="_blank">
+                    <h3>Home (Variant A)</h3>
+                    <p>Original design with card navigation</p>
+                </a>
+                <a href="http://localhost:5173/home-b" class="link-card" target="_blank">
+                    <h3>Home (Variant B)</h3>
+                    <p>Sidebar navigation design</p>
+                </a>
+                <a href="http://localhost:5173/trips" class="link-card" target="_blank">
+                    <h3>Trips (Variant A)</h3>
+                    <p>Original trips list with hero</p>
+                </a>
+                <a href="http://localhost:5173/trips-b" class="link-card" target="_blank">
+                    <h3>Trips (Variant B)</h3>
+                    <p>Compact trips list design</p>
+                </a>
+                <a href="https://browsee.io/app" class="link-card" target="_blank">
+                    <h3>Browsee Dashboard</h3>
+                    <p>View analytics and recordings</p>
+                </a>
+                <a href="https://docs.browsee.io" class="link-card" target="_blank">
+                    <h3>Browsee Docs</h3>
+                    <p>SDK documentation</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Browsee SDK -->
+    <script>
+        window._browsee = window._browsee || function () { (_browsee.q = _browsee.q || []).push(arguments) };
+        _browsee('init', '85fdc052178b978ab4d546170614f5c754a024343dcfe761');
+    </script>
+    <script src="https://cdn.browsee.io/js/browsee.min.js"></script>
+
+    <script>
+        // Check Browsee initialization
+        setTimeout(() => {
+            const statusEl = document.getElementById('status');
+            const initializedEl = document.getElementById('initialized');
+            const sessionEl = document.getElementById('session');
+
+            if (window._browsee) {
+                statusEl.textContent = '✅ Browsee Loaded';
+                statusEl.className = 'status success';
+                initializedEl.textContent = '✅ Yes';
+                sessionEl.textContent = '✅ Active';
+                logEvent('System', 'Browsee initialized successfully');
+            } else {
+                statusEl.textContent = '❌ Browsee Failed';
+                statusEl.className = 'status error';
+                initializedEl.textContent = '❌ No';
+                sessionEl.textContent = '❌ Inactive';
+                logEvent('System', 'Browsee initialization failed', 'error');
+            }
+        }, 2000);
+
+        // Logging function
+        function logEvent(type, message, level = 'info') {
+            const logEl = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            const color = level === 'error' ? '#ff5555' : level === 'success' ? '#50fa7b' : '#0f0';
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <strong style="color: ${color}">[${type}]</strong> ${message}
+            `;
+            
+            if (logEl.firstChild && logEl.firstChild.textContent === 'Waiting for events...') {
+                logEl.innerHTML = '';
+            }
+            
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '<div class="log-entry"><span class="log-time">Log cleared</span></div>';
+        }
+
+        // Test functions
+        function testPageView() {
+            try {
+                window._browsee('logEvent', 'page_view', {
+                    page_name: 'TestPage',
+                    variant: 'Test',
+                    timestamp: new Date().toISOString()
+                });
+                logEvent('Page View', 'Event sent: page_view', 'success');
+            } catch (error) {
+                logEvent('Page View', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testButtonClick() {
+            try {
+                window._browsee('logEvent', 'button_click', {
+                    button_name: 'test_button',
+                    page_name: 'TestPage',
+                    variant: 'Test',
+                    timestamp: new Date().toISOString()
+                });
+                logEvent('Button Click', 'Event sent: button_click', 'success');
+            } catch (error) {
+                logEvent('Button Click', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testNavigation() {
+            try {
+                window._browsee('logEvent', 'navigation', {
+                    from_page: 'TestPage',
+                    to_page: 'TargetPage',
+                    variant: 'Test',
+                    timestamp: new Date().toISOString()
+                });
+                logEvent('Navigation', 'Event sent: navigation', 'success');
+            } catch (error) {
+                logEvent('Navigation', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testABAssignment() {
+            try {
+                window._browsee('logEvent', 'ab_test_assignment', {
+                    test_name: 'test_page_test',
+                    variant: 'Test',
+                    timestamp: new Date().toISOString()
+                });
+                logEvent('A/B Assignment', 'Event sent: ab_test_assignment', 'success');
+            } catch (error) {
+                logEvent('A/B Assignment', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testSearch() {
+            try {
+                window._browsee('logEvent', 'search', {
+                    search_query: 'test query',
+                    page_name: 'TestPage',
+                    variant: 'Test',
+                    timestamp: new Date().toISOString()
+                });
+                logEvent('Search', 'Event sent: search', 'success');
+            } catch (error) {
+                logEvent('Search', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        function testCRUD() {
+            try {
+                window._browsee('logEvent', 'crud_operation', {
+                    operation_type: 'create',
+                    entity_type: 'test_entity',
+                    page_name: 'TestPage',
+                    variant: 'Test',
+                    timestamp: new Date().toISOString()
+                });
+                logEvent('CRUD', 'Event sent: crud_operation (create)', 'success');
+            } catch (error) {
+                logEvent('CRUD', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Log page load
+        window.addEventListener('load', () => {
+            logEvent('System', 'Test page loaded');
+        });
+    </script>
+</body>
+</html>
