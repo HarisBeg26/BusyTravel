@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const tripRoutes = require('./routes/tripRoutes');
 const expenseRoutes = require('./routes/expenseRoute');
 const statisticsRoutes = require('./routes/statisticsRoute');
-const analyticsRoutes = require('./routes/analyticsRoute');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,7 +22,6 @@ app.get('/api/health', (req, res) => {
 app.use('/api/trips', tripRoutes); // Register API routes
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/statistics', statisticsRoutes);
-app.use('/api/analytics', analyticsRoutes);
 
 // Start server
 app.listen(port, () => {

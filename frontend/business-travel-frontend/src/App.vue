@@ -9,10 +9,7 @@
         </div>
       </template>
       <template #end>
-        <div class="app-toolbar">
-          <TestingInstructions />
-          <LanguageSelector />
-        </div>
+        <LanguageSelector />
       </template>
     </Menubar>
 
@@ -27,14 +24,12 @@
 import { defineComponent } from "vue";
 import Menubar from 'primevue/menubar';
 import LanguageSelector from "@/components/LanguageSelector.vue";
-import TestingInstructions from "@/components/TestingInstructions.vue";
 
 export default defineComponent({
   name: "App",
   components: {
     Menubar,
     LanguageSelector,
-    TestingInstructions
   },
   computed: {
     menuItems() {
@@ -101,12 +96,6 @@ export default defineComponent({
   color: #667eea;
   font-size: 1.3rem;
   padding: 0.5rem 0;
-}
-
-.app-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .p-menubar .p-menubar-start .app-title {
