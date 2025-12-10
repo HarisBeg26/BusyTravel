@@ -173,17 +173,6 @@ class ABTestingService {
       ...additionalData
     });
   }
-
-  // Track SUS questionnaire submission
-  trackSUSSubmission(scores, pageName, additionalData = {}) {
-    const variant = this.getUserVariant(pageName);
-    this.trackEvent('sus_submission', {
-      sus_scores: scores,
-      page: pageName,
-      variant,
-      ...additionalData
-    });
-  }
 }
 
 // Create singleton instance
