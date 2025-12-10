@@ -80,6 +80,7 @@
 <script>
 import Card from 'primevue/card';
 import Button from 'primevue/button';
+import { BrowseeEvents } from '@/plugins/browsee';
 
 export default {
   name: "HomePage",
@@ -87,14 +88,40 @@ export default {
     Card,
     Button
   },
+  data() {
+    return {
+      pageLoadTime: null
+    };
+  },
+  mounted() {
+    // Track page view for Home Variant A
+    BrowseeEvents.trackPageView('Home', 'A');
+    BrowseeEvents.trackABTestAssignment('home_page_test', 'A');
+    
+    // Record page load time for time tracking
+    this.pageLoadTime = Date.now();
+  },
+  beforeUnmount() {
+    // Track time spent on page
+    if (this.pageLoadTime) {
+      const timeOnPage = Math.round((Date.now() - this.pageLoadTime) / 1000);
+      BrowseeEvents.trackTimeOnPage('Home', 'A', timeOnPage);
+    }
+  },
   methods: {
     goToTravels() {
+      BrowseeEvents.trackButtonClick('go_to_travels_card', 'Home', 'A');
+      BrowseeEvents.trackNavigation('Home', 'TripsList', 'A');
       this.$router.push("/trips");
     },
     goToExpenses() {
+      BrowseeEvents.trackButtonClick('go_to_expenses_card', 'Home', 'A');
+      BrowseeEvents.trackNavigation('Home', 'ExpensesList', 'A');
       this.$router.push("/expenses");
     },
     goToChart() {
+      BrowseeEvents.trackButtonClick('go_to_charts_card', 'Home', 'A');
+      BrowseeEvents.trackNavigation('Home', 'Statistics', 'A');
       this.$router.push("/statistics");
     }
   }

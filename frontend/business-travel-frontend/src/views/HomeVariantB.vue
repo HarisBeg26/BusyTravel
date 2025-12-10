@@ -187,6 +187,7 @@ import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Breadcrumb from 'primevue/breadcrumb';
 import Divider from 'primevue/divider';
+import { BrowseeEvents } from '@/plugins/browsee';
 
 export default {
   name: "HomePageVariantB",
@@ -201,17 +202,40 @@ export default {
       breadcrumbHome: { icon: 'pi pi-home', to: '/' },
       breadcrumbItems: [
         { label: 'Dashboard', disabled: true }
-      ]
+      ],
+      pageLoadTime: null
     };
+  },
+  mounted() {
+    // Track page view for Home Variant B
+    BrowseeEvents.trackPageView('Home', 'B');
+    BrowseeEvents.trackABTestAssignment('home_page_test', 'B');
+    BrowseeEvents.trackFeatureUsage('sidebar_navigation', 'Home', 'B');
+    
+    // Record page load time
+    this.pageLoadTime = Date.now();
+  },
+  beforeUnmount() {
+    // Track time spent on page
+    if (this.pageLoadTime) {
+      const timeOnPage = Math.round((Date.now() - this.pageLoadTime) / 1000);
+      BrowseeEvents.trackTimeOnPage('Home', 'B', timeOnPage);
+    }
   },
   methods: {
     goToTravels() {
+      BrowseeEvents.trackButtonClick('go_to_travels_sidebar', 'Home', 'B');
+      BrowseeEvents.trackNavigation('Home', 'TripsList', 'B');
       this.$router.push("/trips");
     },
     goToExpenses() {
+      BrowseeEvents.trackButtonClick('go_to_expenses_sidebar', 'Home', 'B');
+      BrowseeEvents.trackNavigation('Home', 'ExpensesList', 'B');
       this.$router.push("/expenses");
     },
     goToChart() {
+      BrowseeEvents.trackButtonClick('go_to_charts_sidebar', 'Home', 'B');
+      BrowseeEvents.trackNavigation('Home', 'Statistics', 'B');
       this.$router.push("/statistics");
     }
   }

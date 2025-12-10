@@ -148,6 +148,7 @@ import Breadcrumb from 'primevue/breadcrumb';
 import EditTripModal from '@/components/modals/EditTripModal.vue';
 import AddTripModal from '@/components/modals/AddTripModal.vue';
 import DeleteConfirmationModal from '@/components/modals/DeleteConfirmationModal.vue';
+import { BrowseeEvents } from '@/plugins/browsee';
 
 export default {
   components: {
@@ -178,7 +179,8 @@ export default {
       breadcrumbHome: { icon: 'pi pi-home', command: () => this.$router.push('/') },
       breadcrumbItems: [
         { label: 'Trips', disabled: true }
-      ]
+      ],
+      pageLoadTime: null
     };
   },
   computed: {
@@ -196,8 +198,29 @@ export default {
       });
     },
   },
+  watch: {
+    searchQuery(newVal) {
+      if (newVal) {
+        BrowseeEvents.trackSearch(newVal, 'TripsList', 'B');
+        BrowseeEvents.trackFeatureUsage('compact_search', 'TripsList', 'B');
+      }
+    }
+  },
   mounted() {
+    // Track page view for TripsList Variant B
+    BrowseeEvents.trackPageView('TripsList', 'B');
+    BrowseeEvents.trackABTestAssignment('trips_list_test', 'B');
+    BrowseeEvents.trackFeatureUsage('compact_toolbar', 'TripsList', 'B');
+    BrowseeEvents.trackFeatureUsage('breadcrumb_navigation', 'TripsList', 'B');
+    
+    this.pageLoadTime = Date.now();
     this.fetchTrips();
+  },
+  beforeUnmount() {
+    if (this.pageLoadTime) {
+      const timeOnPage = Math.round((Date.now() - this.pageLoadTime) / 1000);
+      BrowseeEvents.trackTimeOnPage('TripsList', 'B', timeOnPage);
+    }
   },
   methods: {
     async fetchTrips() {
@@ -212,9 +235,11 @@ export default {
       }
     },
     redirectToAddTravel() {
+      BrowseeEvents.trackButtonClick('add_trip_compact_toolbar', 'TripsList', 'B');
       this.addDialogVisible = true;
     },
     editTrip(trip) {
+      BrowseeEvents.trackButtonClick('edit_trip_compact_button', 'TripsList', 'B');
       this.editingTrip = { ...trip };
       this.editDialogVisible = true;
     },
@@ -222,6 +247,7 @@ export default {
       try {
         const response = await axios.post(`${config.apiBaseUrl}/trips`, tripData);
         this.trips.unshift(response.data);
+        BrowseeEvents.trackCRUDOperation('create', 'trip', 'TripsList', 'B');
       } catch (error) {
         console.error("Error creating trip:", error);
       }
@@ -247,6 +273,8 @@ export default {
           console.error("Invalid response data when saving trip");
         }
 
+        BrowseeEvents.trackCRUDOperation('update', 'trip', 'TripsList', 'B');
+
         await this.fetchTrips();
         this.editDialogVisible = false;
       } catch (error) {
@@ -256,6 +284,7 @@ export default {
       }
     },
     confirmDelete(trip) {
+      BrowseeEvents.trackButtonClick('delete_trip_compact_button', 'TripsList', 'B');
       this.tripToDelete = trip;
       this.deleteDialogVisible = true;
     },
@@ -263,6 +292,7 @@ export default {
       try {
         await axios.delete(`${config.apiBaseUrl}/trips/${this.tripToDelete.id}`);
         this.trips = this.trips.filter((trip) => trip.id !== this.tripToDelete.id);
+        BrowseeEvents.trackCRUDOperation('delete', 'trip', 'TripsList', 'B');
         this.deleteDialogVisible = false;
         this.tripToDelete = null;
       } catch (error) {
