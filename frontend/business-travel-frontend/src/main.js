@@ -2,8 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import { createI18n } from "vue-i18n";
 import router from "./router";
-import browsee from '@browsee/web-sdk';
-import BrowseePlugin from './plugins/browsee';
+import HotjarPlugin from './plugins/hotjar';
 
 // Import PrimeVue
 import PrimeVue from 'primevue/config';
@@ -15,9 +14,6 @@ import Tooltip from 'primevue/tooltip';
 import en from "@/locales/en.json";
 import sl from "@/locales/sl.json";
 import bh from "@/locales/bh.json";
-
-// Initialize Browsee for A/B testing analytics
-browsee.init({ apiKey: '85fdc052178b978ab4d546170614f5c754a024343dcfe761' });
 
 // Set up i18n instance with locale messages
 const i18n = createI18n({
@@ -41,8 +37,8 @@ app.use(ToastService);
 // Register Tooltip directive
 app.directive('tooltip', Tooltip);
 
-// Use Browsee plugin for analytics
-app.use(BrowseePlugin);
+// Use Hotjar plugin for A/B testing analytics
+app.use(HotjarPlugin);
 
 // Use i18n and router
 app.use(i18n);

@@ -150,7 +150,7 @@ import Breadcrumb from 'primevue/breadcrumb';
 import EditTripModal from '@/components/modals/EditTripModal.vue';
 import AddTripModal from '@/components/modals/AddTripModal.vue';
 import DeleteConfirmationModal from '@/components/modals/DeleteConfirmationModal.vue';
-import { BrowseeEvents } from '@/plugins/browsee';
+import { HotjarEvents } from '@/plugins/hotjar';
 
 export default {
   components: {
@@ -203,17 +203,17 @@ export default {
   watch: {
     searchQuery(newVal) {
       if (newVal) {
-        BrowseeEvents.trackSearch(newVal, 'TripsList', 'B');
-        BrowseeEvents.trackFeatureUsage('compact_search', 'TripsList', 'B');
+        HotjarEvents.trackSearch(newVal, 'TripsList', 'B');
+        HotjarEvents.trackFeatureUsage('compact_search', 'TripsList', 'B');
       }
     }
   },
   mounted() {
     // Track page view for TripsList Variant B
-    BrowseeEvents.trackPageView('TripsList', 'B');
-    BrowseeEvents.trackABTestAssignment('trips_list_test', 'B');
-    BrowseeEvents.trackFeatureUsage('compact_toolbar', 'TripsList', 'B');
-    BrowseeEvents.trackFeatureUsage('breadcrumb_navigation', 'TripsList', 'B');
+    HotjarEvents.trackPageView('TripsList', 'B');
+    HotjarEvents.trackABTestAssignment('trips_list_test', 'B');
+    HotjarEvents.trackFeatureUsage('compact_toolbar', 'TripsList', 'B');
+    HotjarEvents.trackFeatureUsage('breadcrumb_navigation', 'TripsList', 'B');
     
     this.pageLoadTime = Date.now();
     this.fetchTrips();
@@ -221,7 +221,7 @@ export default {
   beforeUnmount() {
     if (this.pageLoadTime) {
       const timeOnPage = Math.round((Date.now() - this.pageLoadTime) / 1000);
-      BrowseeEvents.trackTimeOnPage('TripsList', 'B', timeOnPage);
+      HotjarEvents.trackTimeOnPage('TripsList', 'B', timeOnPage);
     }
   },
   methods: {
@@ -237,11 +237,11 @@ export default {
       }
     },
     redirectToAddTravel() {
-      BrowseeEvents.trackButtonClick('add_trip_compact_toolbar', 'TripsList', 'B');
+      HotjarEvents.trackButtonClick('add_trip_compact_toolbar', 'TripsList', 'B');
       this.addDialogVisible = true;
     },
     editTrip(trip) {
-      BrowseeEvents.trackButtonClick('edit_trip_compact_button', 'TripsList', 'B');
+      HotjarEvents.trackButtonClick('edit_trip_compact_button', 'TripsList', 'B');
       this.editingTrip = { ...trip };
       this.editDialogVisible = true;
     },
@@ -249,7 +249,7 @@ export default {
       try {
         const response = await axios.post(`${config.apiBaseUrl}/trips`, tripData);
         this.trips.unshift(response.data);
-        BrowseeEvents.trackCRUDOperation('create', 'trip', 'TripsList', 'B');
+        HotjarEvents.trackCRUDOperation('create', 'trip', 'TripsList', 'B');
       } catch (error) {
         console.error("Error creating trip:", error);
       }
@@ -275,7 +275,7 @@ export default {
           console.error("Invalid response data when saving trip");
         }
 
-        BrowseeEvents.trackCRUDOperation('update', 'trip', 'TripsList', 'B');
+        HotjarEvents.trackCRUDOperation('update', 'trip', 'TripsList', 'B');
 
         await this.fetchTrips();
         this.editDialogVisible = false;
@@ -286,7 +286,7 @@ export default {
       }
     },
     confirmDelete(trip) {
-      BrowseeEvents.trackButtonClick('delete_trip_compact_button', 'TripsList', 'B');
+      HotjarEvents.trackButtonClick('delete_trip_compact_button', 'TripsList', 'B');
       this.tripToDelete = trip;
       this.deleteDialogVisible = true;
     },
@@ -294,7 +294,7 @@ export default {
       try {
         await axios.delete(`${config.apiBaseUrl}/trips/${this.tripToDelete.id}`);
         this.trips = this.trips.filter((trip) => trip.id !== this.tripToDelete.id);
-        BrowseeEvents.trackCRUDOperation('delete', 'trip', 'TripsList', 'B');
+        HotjarEvents.trackCRUDOperation('delete', 'trip', 'TripsList', 'B');
         this.deleteDialogVisible = false;
         this.tripToDelete = null;
       } catch (error) {

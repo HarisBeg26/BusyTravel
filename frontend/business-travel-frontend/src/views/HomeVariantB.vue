@@ -187,7 +187,7 @@ import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Breadcrumb from 'primevue/breadcrumb';
 import Divider from 'primevue/divider';
-import { BrowseeEvents } from '@/plugins/browsee';
+import { HotjarEvents } from '@/plugins/hotjar';
 
 export default {
   name: "HomePageVariantB",
@@ -208,9 +208,9 @@ export default {
   },
   mounted() {
     // Track page view for Home Variant B
-    BrowseeEvents.trackPageView('Home', 'B');
-    BrowseeEvents.trackABTestAssignment('home_page_test', 'B');
-    BrowseeEvents.trackFeatureUsage('sidebar_navigation', 'Home', 'B');
+    HotjarEvents.trackPageView('Home', 'B');
+    HotjarEvents.trackABTestAssignment('home_page_test', 'B');
+    HotjarEvents.trackFeatureUsage('sidebar_navigation', 'Home', 'B');
     
     // Record page load time
     this.pageLoadTime = Date.now();
@@ -219,23 +219,23 @@ export default {
     // Track time spent on page
     if (this.pageLoadTime) {
       const timeOnPage = Math.round((Date.now() - this.pageLoadTime) / 1000);
-      BrowseeEvents.trackTimeOnPage('Home', 'B', timeOnPage);
+      HotjarEvents.trackTimeOnPage('Home', 'B', timeOnPage);
     }
   },
   methods: {
     goToTravels() {
-      BrowseeEvents.trackButtonClick('go_to_travels_sidebar', 'Home', 'B');
-      BrowseeEvents.trackNavigation('Home', 'TripsList', 'B');
+      HotjarEvents.trackButtonClick('go_to_travels_sidebar', 'Home', 'B');
+      HotjarEvents.trackNavigation('Home', 'TripsList', 'B');
       this.$router.push("/trips");
     },
     goToExpenses() {
-      BrowseeEvents.trackButtonClick('go_to_expenses_sidebar', 'Home', 'B');
-      BrowseeEvents.trackNavigation('Home', 'ExpensesList', 'B');
+      HotjarEvents.trackButtonClick('go_to_expenses_sidebar', 'Home', 'B');
+      HotjarEvents.trackNavigation('Home', 'ExpensesList', 'B');
       this.$router.push("/expenses");
     },
     goToChart() {
-      BrowseeEvents.trackButtonClick('go_to_charts_sidebar', 'Home', 'B');
-      BrowseeEvents.trackNavigation('Home', 'Statistics', 'B');
+      HotjarEvents.trackButtonClick('go_to_charts_sidebar', 'Home', 'B');
+      HotjarEvents.trackNavigation('Home', 'Statistics', 'B');
       this.$router.push("/statistics");
     }
   }
