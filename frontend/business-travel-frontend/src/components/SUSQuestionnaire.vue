@@ -1,7 +1,8 @@
 <template>
   <div class="sus-questionnaire">
     <Dialog 
-      v-model:visible="visible" 
+      :visible="visible" 
+      @update:visible="$emit('update:visible', $event)"
       modal 
       :header="$t('susQuestionnaire') || 'SUS Questionnaire'"
       :style="{ width: '50rem' }" 
