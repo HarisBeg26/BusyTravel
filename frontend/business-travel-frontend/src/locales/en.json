@@ -41,7 +41,5 @@
   "tripsList": "Trips List",
   "searchByDestination": "Search by destination...",
   "noTripsFound": "No trips found.",
-  "details": "Details",
-  "Take Survey": "Take Survey",
-  "surveyTooltip": "Help us improve by taking a short survey!"
+  "details": "Details"
 }

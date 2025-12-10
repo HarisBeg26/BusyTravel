@@ -10,13 +10,6 @@
       </template>
       <template #end>
         <LanguageSelector />
-        <Button 
-          :label="$t('Take Survey')" 
-          icon="pi pi-pencil" 
-          class="p-button-text p-button-plain survey-button" 
-          @click="openSurvey" 
-          v-tooltip.bottom="$t('surveyTooltip')"
-        />
       </template>
     </Menubar>
 
@@ -30,15 +23,12 @@
 <script>
 import { defineComponent } from "vue";
 import Menubar from 'primevue/menubar';
-import Button from 'primevue/button';
 import LanguageSelector from "@/components/LanguageSelector.vue";
-import abTestingService from "@/services/abTestingService";
 
 export default defineComponent({
   name: "App",
   components: {
     Menubar,
-    Button,
     LanguageSelector,
   },
   computed: {
@@ -65,20 +55,6 @@ export default defineComponent({
           command: () => this.$router.push('/statistics')
         }
       ];
-    }
-  },
-  methods: {
-    openSurvey() {
-      const variantHome = abTestingService.getUserVariant('home');
-      
-      // IMPORTANT: Replace these placeholder URLs with your actual 1ka survey links
-      const surveyUrlA = 'https://www.1ka.si/VASA_ANKETA_ZA_VERZIJO_A';
-      const surveyUrlB = 'https://www.1ka.si/VASA_ANKETA_ZA_VERZIJO_B';
-
-      const surveyUrl = variantHome === 'B' ? surveyUrlB : surveyUrlA;
-
-      abTestingService.trackButtonClick('open_survey', 'app', { variant: variantHome });
-      window.open(surveyUrl, '_blank');
     }
   }
 });
@@ -205,18 +181,6 @@ export default defineComponent({
   margin-left: auto;
   display: flex;
   align-items: center;
-}
-
-.survey-button {
-  color: #667eea !important;
-  font-weight: 600 !important;
-  margin-left: 1rem;
-  transition: all 0.3s ease !important;
-}
-
-.survey-button:hover {
-  background-color: rgba(102, 126, 234, 0.1) !important;
-  color: #5a67d8 !important;
 }
 
 /* Responsive navigation */
