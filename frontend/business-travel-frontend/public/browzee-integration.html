@@ -1,0 +1,35 @@
+<!-- Browzee Integration Script -->
+<!-- Add this to your index.html file in the <head> section -->
+<script>
+(function() {
+  // Replace 'YOUR_BROWZEE_PROJECT_ID' with your actual Browzee project ID
+  var browzeeProjectId = 'YOUR_BROWZEE_PROJECT_ID';
+  
+  // Browzee tracking script
+  window.browzee = window.browzee || function() {
+    (browzee.q = browzee.q || []).push(arguments);
+  };
+  browzee.l = 1 * new Date();
+  
+  var script = document.createElement('script');
+  script.async = true;
+  script.src = 'https://script.browzee.com/browzee.js';
+  script.onload = function() {
+    // Initialize Browzee with your project ID
+    browzee('init', browzeeProjectId);
+    
+    // Set up custom events for A-B testing
+    browzee('config', {
+      autoTrack: true,
+      trackClicks: true,
+      trackScrolling: true,
+      trackForms: true
+    });
+    
+    console.log('Browzee initialized successfully');
+  };
+  
+  var firstScript = document.getElementsByTagName('script')[0];
+  firstScript.parentNode.insertBefore(script, firstScript);
+})();
+</script>

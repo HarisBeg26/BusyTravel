@@ -1,5 +1,16 @@
 <template>
   <div class="home-page">
+    <!-- SUS Questionnaire Button -->
+    <div class="sus-trigger">
+      <Button
+        icon="pi pi-star"
+        :label="$t('ratePage') || 'Ocenite stran'"
+        @click="showSUSQuestionnaire"
+        class="sus-button"
+        outlined
+      />
+    </div>
+
     <div class="hero-section">
       <div class="hero-content">
         <h1 class="hero-title">{{ $t('welcomeMessage') }}</h1>
@@ -26,6 +37,7 @@
             icon="pi pi-arrow-right"
             iconPos="right"
             class="gradient-button-primary feature-button"
+            @click="trackButtonClick('goToTravels')"
           />
         </template>
       </Card>
@@ -48,6 +60,7 @@
             icon="pi pi-arrow-right"
             iconPos="right"
             class="gradient-button-secondary feature-button"
+            @click="trackButtonClick('goToExpenses')"
           />
         </template>
       </Card>
@@ -70,32 +83,71 @@
             icon="pi pi-arrow-right"
             iconPos="right"
             class="gradient-button-tertiary feature-button"
+            @click="trackButtonClick('goToCharts')"
           />
         </template>
       </Card>
     </div>
+
+    <!-- SUS Questionnaire Component -->
+    <SUSQuestionnaire
+      v-model:visible="susVisible"
+      page-name="home"
+      @submitted="onSUSSubmitted"
+    />
   </div>
 </template>
 
 <script>
 import Card from 'primevue/card';
 import Button from 'primevue/button';
+import SUSQuestionnaire from '@/components/SUSQuestionnaire.vue';
+import abTestingService from '@/services/abTestingService.js';
 
 export default {
   name: "HomePage",
   components: {
     Card,
-    Button
+    Button,
+    SUSQuestionnaire
+  },
+  data() {
+    return {
+      susVisible: false
+    }
+  },
+  mounted() {
+    // Track page view
+    abTestingService.trackPageView('home');
   },
   methods: {
     goToTravels() {
+      this.trackButtonClick('goToTravels');
       this.$router.push("/trips");
     },
     goToExpenses() {
+      this.trackButtonClick('goToExpenses');
       this.$router.push("/expenses");
     },
     goToChart() {
+      this.trackButtonClick('goToCharts');
       this.$router.push("/statistics");
+    },
+    trackButtonClick(buttonName) {
+      abTestingService.trackButtonClick(buttonName, 'home');
+    },
+    showSUSQuestionnaire() {
+      this.susVisible = true;
+      abTestingService.trackButtonClick('sus_questionnaire_open', 'home');
+    },
+    onSUSSubmitted(data) {
+      console.log('SUS questionnaire submitted:', data);
+      this.$toast?.add({
+        severity: 'success',
+        summary: 'Hvala!',
+        detail: `Vaš odgovor je bil uspešno poslan. Ocena: ${data.score}/100`,
+        life: 5000
+      });
     }
   }
 };
@@ -107,6 +159,32 @@ export default {
   padding: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.sus-trigger {
+  position: fixed;
+  top: 100px;
+  right: 2rem;
+  z-index: 1000;
+}
+
+.sus-button {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #667eea;
+  color: #667eea;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.sus-button:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .hero-section {
