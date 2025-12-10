@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Home from '@/views/Home.vue';
+import HomeVariantB from '@/views/HomeVariantB.vue';
 import TripsList from '@/views/TripsList.vue';
+import TripsListVariantB from '@/views/TripsListVariantB.vue';
 import ExpensesList from '@/views/ExpensesList.vue';
 import Statistics from '@/views/Statistics.vue';
 import AddTrip from "@/views/AddTrip.vue";
@@ -14,9 +16,19 @@ const routes = [
         component: Home,
     },
     {
+        path: '/home-b',
+        name: 'HomeVariantB',
+        component: HomeVariantB,
+    },
+    {
         path: '/trips',
         name: 'TripsList',
         component: TripsList,
+    },
+    {
+        path: '/trips-b',
+        name: 'TripsListVariantB',
+        component: TripsListVariantB,
     },
     {
         path:'/add-trip',
