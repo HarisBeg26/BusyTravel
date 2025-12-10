@@ -98,12 +98,14 @@
                     class="p-button-rounded p-button-sm p-button-text action-btn edit-btn"
                     @click="editTrip(slotProps.data)"
                     v-tooltip.top="'Edit'"
+                    aria-label="Edit trip"
                   />
                   <Button
                     icon="pi pi-trash"
                     class="p-button-rounded p-button-sm p-button-text action-btn delete-btn"
                     @click="confirmDelete(slotProps.data)"
                     v-tooltip.top="'Delete'"
+                    aria-label="Delete trip"
                   />
                 </div>
               </template>

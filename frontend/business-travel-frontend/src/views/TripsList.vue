@@ -77,19 +77,21 @@
               </Column>
               <Column header="Actions" class="actions-column">
                 <template #body="slotProps">
-                  <div class="action-buttons" v-if="slotProps.data">
-                    <Button
-                      icon="pi pi-pencil"
-                      class="p-button-rounded p-button-sm p-button-warning action-btn edit-btn"
-                      @click="editTrip(slotProps.data)"
-                      v-tooltip.top="'Edit Trip'"
-                    />
-                    <Button
-                      icon="pi pi-trash"
-                      class="p-button-rounded p-button-sm p-button-danger action-btn delete-btn"
-                      @click="confirmDelete(slotProps.data)"
-                      v-tooltip.top="'Delete Trip'"
-                    />
+                <div class="action-buttons" v-if="slotProps.data">
+                  <Button
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-sm p-button-warning action-btn edit-btn"
+                    @click="editTrip(slotProps.data)"
+                    v-tooltip.top="'Edit Trip'"
+                    aria-label="Edit trip"
+                  />
+                  <Button
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-sm p-button-danger action-btn delete-btn"
+                    @click="confirmDelete(slotProps.data)"
+                    v-tooltip.top="'Delete Trip'"
+                    aria-label="Delete trip"
+                  />
                   </div>
                 </template>
               </Column>

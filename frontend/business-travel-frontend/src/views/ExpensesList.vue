@@ -116,12 +116,14 @@
                       class="p-button-rounded p-button-sm p-button-warning action-btn edit-btn"
                       @click="editExpense(slotProps.data)"
                       v-tooltip.top="'Edit Expense'"
+                      aria-label="Edit expense"
                     />
                     <Button
                       icon="pi pi-trash"
                       class="p-button-rounded p-button-sm p-button-danger action-btn delete-btn"
                       @click="confirmDelete(slotProps.data)"
                       v-tooltip.top="'Delete Expense'"
+                      aria-label="Delete expense"
                     />
                   </div>
                 </template>
