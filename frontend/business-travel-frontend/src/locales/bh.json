@@ -40,5 +40,8 @@
   "tripsList": "Lista putovanja",
   "searchByDestination": "Traži po destinaciji...",
   "noTripsFound": "Nema pronađenih putovanja.",
-  "details": "Detalji"
+  "details": "Detalji",
+  "susButton": "Ocijeni upotrebljivost",
+  "susTitle": "Upitnik upotrebljivosti sistema (SUS)",
+  "susDescription": "Molimo vas pomozite nam poboljšati aplikaciju popunjavanjem kratkog upitnika."
 }

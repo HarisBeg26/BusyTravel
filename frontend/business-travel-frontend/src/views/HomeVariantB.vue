@@ -179,6 +179,9 @@
         </div>
       </main>
     </div>
+
+    <!-- SUS Questionnaire Button for Variant B -->
+    <SUSButton variant="B" surveyId="sus_home_variant_b" />
   </div>
 </template>
 
@@ -187,6 +190,7 @@ import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Breadcrumb from 'primevue/breadcrumb';
 import Divider from 'primevue/divider';
+import SUSButton from '@/components/SUSButton.vue';
 import { HotjarEvents } from '@/plugins/hotjar';
 
 export default {
@@ -195,7 +199,8 @@ export default {
     Card,
     Button,
     Breadcrumb,
-    Divider
+    Divider,
+    SUSButton
   },
   data() {
     return {

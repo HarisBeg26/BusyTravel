@@ -74,19 +74,24 @@
         </template>
       </Card>
     </div>
+
+    <!-- SUS Questionnaire Button for Variant A -->
+    <SUSButton variant="A" surveyId="sus_home_variant_a" />
   </div>
 </template>
 
 <script>
 import Card from 'primevue/card';
 import Button from 'primevue/button';
+import SUSButton from '@/components/SUSButton.vue';
 import { HotjarEvents } from '@/plugins/hotjar';
 
 export default {
   name: "HomePage",
   components: {
     Card,
-    Button
+    Button,
+    SUSButton
   },
   data() {
     return {

@@ -41,5 +41,8 @@
   "tripsList": "Trips List",
   "searchByDestination": "Search by destination...",
   "noTripsFound": "No trips found.",
-  "details": "Details"
+  "details": "Details",
+  "susButton": "Rate Usability",
+  "susTitle": "System Usability Scale (SUS)",
+  "susDescription": "Please help us improve the app by completing a short questionnaire."
 }

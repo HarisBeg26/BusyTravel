@@ -118,6 +118,9 @@
       :message="$t('Are you sure you want to delete this trip?')"
       @confirm="deleteTrip"
     />
+
+    <!-- SUS Questionnaire Button for Variant A -->
+    <SUSButton variant="A" surveyId="sus_trips_variant_a" />
   </div>
 </template>
 
@@ -133,6 +136,7 @@ import InputText from 'primevue/inputtext';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import Tag from 'primevue/tag';
+import SUSButton from '@/components/SUSButton.vue';
 import EditTripModal from '@/components/modals/EditTripModal.vue';
 import AddTripModal from '@/components/modals/AddTripModal.vue';
 import DeleteConfirmationModal from '@/components/modals/DeleteConfirmationModal.vue';
@@ -148,6 +152,7 @@ export default {
     IconField,
     InputIcon,
     Tag,
+    SUSButton,
     EditTripModal,
     AddTripModal,
     DeleteConfirmationModal
