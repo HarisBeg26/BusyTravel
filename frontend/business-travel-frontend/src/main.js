@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import { createI18n } from "vue-i18n";
 import router from "./router";
-import HotjarPlugin from './plugins/hotjar';
 
 // Import PrimeVue
 import PrimeVue from 'primevue/config';
@@ -36,9 +35,6 @@ app.use(ToastService);
 
 // Register Tooltip directive
 app.directive('tooltip', Tooltip);
-
-// Use Hotjar plugin for A/B testing analytics
-app.use(HotjarPlugin);
 
 // Use i18n and router
 app.use(i18n);
