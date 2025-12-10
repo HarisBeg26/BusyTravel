@@ -40,9 +40,4 @@ app.directive('tooltip', Tooltip);
 app.use(i18n);
 app.use(router);
 
-// Initialize Browsee
-Browsee.init({
-  apiKey: "85fdc052178b978ab4d546170614f5c754a024343dcfe761"
-});
-
 app.mount("#app");
