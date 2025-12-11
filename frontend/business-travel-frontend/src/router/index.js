@@ -60,24 +60,47 @@ const router = createRouter({
 
 // A/B Testing: Automatically redirect users to their assigned variant
 router.beforeEach((to, from, next) => {
+    // Check if user is directly accessing a variant page (e.g., via URL)
+    const isDirectAccess = from.name === null || from.name === undefined;
+    
+    // If user directly accesses /home-b or /trips-b, assign them to variant B
+    if (isDirectAccess && (to.path === '/home-b' || to.path === '/trips-b')) {
+        sessionStorage.setItem('ab_test_variant', 'B');
+        next();
+        return;
+    }
+    
+    // If user directly accesses / or /trips, assign them to variant A
+    if (isDirectAccess && (to.path === '/' || to.path === '/trips')) {
+        sessionStorage.setItem('ab_test_variant', 'A');
+        next();
+        return;
+    }
+    
     const variant = ABTestRouter.getVariant();
     
-    // Redirect home page based on variant
-    if (to.path === '/' && variant === 'B') {
-        next('/home-b');
-    } else if (to.path === '/home-b' && variant === 'A') {
-        next('/');
+    // Only redirect if user is navigating (not direct URL access)
+    if (!isDirectAccess) {
+        // Redirect home page based on variant
+        if (to.path === '/' && variant === 'B') {
+            next('/home-b');
+            return;
+        } else if (to.path === '/home-b' && variant === 'A') {
+            next('/');
+            return;
+        }
+        // Redirect trips page based on variant
+        else if (to.path === '/trips' && variant === 'B') {
+            next('/trips-b');
+            return;
+        } else if (to.path === '/trips-b' && variant === 'A') {
+            next('/trips');
+            return;
+        }
     }
-    // Redirect trips page based on variant
-    else if (to.path === '/trips' && variant === 'B') {
-        next('/trips-b');
-    } else if (to.path === '/trips-b' && variant === 'A') {
-        next('/trips');
-    }
+    
     // All other routes proceed normally
-    else {
-        next();
-    }
+    next();
 });
 
 export default router;
