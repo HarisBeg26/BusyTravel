@@ -82,14 +82,14 @@
                     icon="pi pi-pencil"
                     class="p-button-rounded p-button-sm p-button-warning action-btn edit-btn"
                     @click="editTrip(slotProps.data)"
-                    v-tooltip.top="'Edit Trip'"
+                    v-tooltip.top="$t('editTrip')"
                     aria-label="Edit trip"
                   />
                   <Button
                     icon="pi pi-trash"
                     class="p-button-rounded p-button-sm p-button-danger action-btn delete-btn"
                     @click="confirmDelete(slotProps.data)"
-                    v-tooltip.top="'Delete Trip'"
+                    v-tooltip.top="$t('deleteTrip')"
                     aria-label="Delete trip"
                   />
                   </div>
@@ -412,7 +412,7 @@ export default {
 
 .search-input-modern {
   width: 100%;
-  padding: 1.2rem 1.5rem 1.2rem 3rem;
+  padding: 1.2rem 1.5rem 1.2rem 3.5rem;
   font-size: 1.1rem;
   background: rgba(26, 28, 35, 0.9);
   border: 2px solid rgba(255, 255, 255, 0.1);
@@ -422,7 +422,7 @@ export default {
 }
 
 :deep(.p-inputtext) {
-  padding-left: 3rem !important;
+  padding-left: 3.5rem !important;
 }
 
 :deep(.p-input-icon) {

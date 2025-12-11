@@ -97,14 +97,14 @@
                     icon="pi pi-pencil"
                     class="p-button-rounded p-button-sm p-button-text action-btn edit-btn"
                     @click="editTrip(slotProps.data)"
-                    v-tooltip.top="'Edit'"
+                    v-tooltip.top="$t('editTrip')"
                     aria-label="Edit trip"
                   />
                   <Button
                     icon="pi pi-trash"
                     class="p-button-rounded p-button-sm p-button-text action-btn delete-btn"
                     @click="confirmDelete(slotProps.data)"
-                    v-tooltip.top="'Delete'"
+                    v-tooltip.top="$t('deleteTrip')"
                     aria-label="Delete trip"
                   />
                 </div>
@@ -376,7 +376,7 @@ export default {
 
 .search-input-compact {
   width: 320px;
-  padding: 0.75rem 1rem 0.75rem 3rem;
+  padding: 0.75rem 1rem 0.75rem 3.5rem;
   border-radius: 10px;
   border: 1px solid #e2e8f0;
   background: #f8f9fa;
